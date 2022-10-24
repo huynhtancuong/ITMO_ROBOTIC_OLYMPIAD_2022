@@ -11,6 +11,7 @@ typedef struct Coordinate {
   double y = 0;
 } Coordinate;
 
+
 Second getTime();
 
 #endif

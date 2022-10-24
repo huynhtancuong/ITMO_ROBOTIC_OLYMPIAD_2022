@@ -38,6 +38,9 @@ void setup() {
 
   // Once time code
   // car.forward(100);
+  // car.leftMotor.run(255);
+  car.move_to(1, 0);
+  car.move_to(1, 1);
 }
 
 void loop() {
@@ -45,7 +48,7 @@ void loop() {
   // Serial.print(car.leftMotor.getPositionR());
   // Serial.print(", ");
   // Serial.println(car.rightMotor.getPositionR());
-  car.move_to(5, 5);
+  // car.move_to(1, 1);
 }
 
 

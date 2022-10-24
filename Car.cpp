@@ -23,7 +23,6 @@ void Car::turnLeft(int pwm);
 void Car::turnRight(int pwm);
 
 void Car::update_coordinate() {
-  currentTime = getTime() - startTime;
 
   Radian curLeftAngle = leftMotor.getPositionR();
   Radian curRightAngle = rightMotor.getPositionR();
@@ -60,13 +59,12 @@ Radian Car::get_course_angle(Radian curLeftAngle, Radian curRightAngle) {
 
 void Car::move_to(double x, double y) {
   currentTime = getTime() - startTime;
-
+  prevTime = currentTime;
   update_goal(x, y);
 
   update_coordinate();
 
   while (!isNearGoal(0.025)) {
-    currentTime = getTime() - startTime;
     run( get_pwm_left() , get_pwm_right() );
 
     // Serial.println( get_pwm_left() );
@@ -74,6 +72,8 @@ void Car::move_to(double x, double y) {
     Serial.print(coord.x);
     Serial.print(", ");
     Serial.print(coord.y);
+    Serial.print(", ");
+    Serial.print(PID_integral);
     Serial.print(", ");
     Serial.println(distance);
   }  
@@ -94,8 +94,17 @@ bool Car::isNearGoal(double error) {
 }
 
 double Car::get_linearSpeed() {
+  currentTime = getTime() - startTime;
+  Second dt = currentTime - prevTime;
+  prevTime = currentTime;
+
+  PID_integral += distance*dt;
+  if (abs(PID_integral) > 100/PID_KI) PID_integral = copysign(1, PID_integral) * 100/PID_KI;
+
+
+
   // double linearSpeed = K_STRAIGHT * distance * cos(heading);
-  double linearSpeed = K_STRAIGHT * distance;
+  double linearSpeed = K_STRAIGHT * distance + PID_KI * PID_integral;
   if (abs(linearSpeed) > 150) linearSpeed = copysign(1, linearSpeed) * 150;
   return linearSpeed;
 }

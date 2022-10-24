@@ -15,11 +15,13 @@ void Motor::run(int pwm) {
   if (pwm >=0) // FORWARD
   {
     currentDirection = FORWARD;
+    digitalWrite(dirPin, 1);
     analogWrite(pwmPin, pwm);
   }
   else // BACKWARD
   {
     currentDirection = BACKWARD;
+    digitalWrite(dirPin, 0);
     analogWrite(pwmPin, pwm);
   }
 }

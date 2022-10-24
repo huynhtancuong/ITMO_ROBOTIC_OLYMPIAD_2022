@@ -10,12 +10,15 @@ class Car {
     Motor leftMotor, rightMotor;
     Coordinate coord; // coordinate of the robot
     Coordinate goal; // coordiante of the goal
-    Meter wheelRadius = 0.065; // radius of the wheel
+    Meter wheelRadius = 0.065/2; // radius of the wheel
     Meter distanceBetweenWheels = 0.126; // distance between the wheel
     Second startTime;
     Second currentTime;
+    Second prevTime;
     Radian heading = 0;
     double K_STRAIGHT=60, K_ROTATION=50;
+    double PID_integral = 0;
+    double PID_KI = 15;
     
     void init();
     void run(int left, int right);
