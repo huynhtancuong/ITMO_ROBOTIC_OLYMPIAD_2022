@@ -5,8 +5,6 @@ void Motor::init() {
   pinMode(dirPin, OUTPUT);
   digitalWrite(dirPin, 0);
   analogWrite(pwmPin, 0);
-  speed_ctr.KP = 1;
-  speed_ctr.KI = 1;
   speed_ctr.I = 0;
 }
 
@@ -15,7 +13,7 @@ double Motor::getSpeed() {
   Second currentTime = getTime();
   Second dt = currentTime - prevTimeGetSpeed;
 
-  if (dt >= 0.1) {
+  if (dt >= 0.3) {
   
     prevTimeGetSpeed = currentTime;
   
@@ -43,8 +41,8 @@ void Motor::run_rpm(RPM rpm) {
   
   int pwm = speed_ctr.KP * (speedError) + speed_ctr.KI * speed_ctr.I;
 
-  Serial.print(getSpeed());
-  Serial.print(", ");
+  // Serial.print(getSpeed());
+  // Serial.print(", ");
 //  Serial.print(pwm);
 
   prevPwm = pwm;
@@ -56,8 +54,7 @@ void Motor::run_rpm(RPM rpm) {
 
 void Motor::run(int pwm) {
 
-  if (pwm > 255) pwm = 255;
-  if (pwm < -255) pwm = -255;
+  if (abs(pwm) > 255) pwm = copysign(1, pwm) * 255;
 
   if (getTime() - prevTimeRun >= 0.0) {
     prevTimeRun = getTime();
@@ -74,6 +71,20 @@ void Motor::run(int pwm) {
       analogWrite(pwmPin, pwm);
     }
   }
+}
+
+void Motor::run_cal(int percent) {
+  if (abs(percent) > 100) percent = copysign(1, percent)*100;
+
+  int pwm = 0;
+  if (percent>0) {
+    pwm = map(percent, 0, 100, 80, 255);
+  }
+  else if (percent < 0) {
+    pwm = map(percent, -100, 0, -255, -80);
+  }
+  run(pwm);
+
 }
 
 Radian Motor::getPositionR() { // return position of motor in Radian

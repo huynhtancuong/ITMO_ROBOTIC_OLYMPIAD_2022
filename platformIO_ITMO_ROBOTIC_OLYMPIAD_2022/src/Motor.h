@@ -27,6 +27,7 @@ class Motor {
     void init();
     void run(int speed);
     void run_rpm(RPM rpm);
+    void run_cal(int percent);
     Radian getPositionR(); // return position of motor in radian
     Degree getPositionD(); // return position of motor in Degrees
     RPM getSpeed(); // return rotation per minute

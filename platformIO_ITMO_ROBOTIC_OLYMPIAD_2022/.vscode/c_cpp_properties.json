@@ -8,11 +8,11 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/home/rpitmo/Documents/PlatformIO/Projects/221025-214340-uno/include",
-                "/home/rpitmo/Documents/PlatformIO/Projects/221025-214340-uno/src",
+                "/home/rpitmo/Arduino/ITMO_ROBOTIC_OLYMPIAD_2022/platformIO_ITMO_ROBOTIC_OLYMPIAD_2022/include",
+                "/home/rpitmo/Arduino/ITMO_ROBOTIC_OLYMPIAD_2022/platformIO_ITMO_ROBOTIC_OLYMPIAD_2022/src",
                 "/home/rpitmo/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "/home/rpitmo/.platformio/packages/framework-arduino-avr/variants/standard",
-                "/home/rpitmo/Documents/PlatformIO/Projects/221025-214340-uno/.pio/libdeps/uno/Unity/src",
+                "/home/rpitmo/Arduino/ITMO_ROBOTIC_OLYMPIAD_2022/platformIO_ITMO_ROBOTIC_OLYMPIAD_2022/.pio/libdeps/uno/Unity/src",
                 "/home/rpitmo/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "/home/rpitmo/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "/home/rpitmo/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -23,11 +23,11 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/home/rpitmo/Documents/PlatformIO/Projects/221025-214340-uno/include",
-                    "/home/rpitmo/Documents/PlatformIO/Projects/221025-214340-uno/src",
+                    "/home/rpitmo/Arduino/ITMO_ROBOTIC_OLYMPIAD_2022/platformIO_ITMO_ROBOTIC_OLYMPIAD_2022/include",
+                    "/home/rpitmo/Arduino/ITMO_ROBOTIC_OLYMPIAD_2022/platformIO_ITMO_ROBOTIC_OLYMPIAD_2022/src",
                     "/home/rpitmo/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "/home/rpitmo/.platformio/packages/framework-arduino-avr/variants/standard",
-                    "/home/rpitmo/Documents/PlatformIO/Projects/221025-214340-uno/.pio/libdeps/uno/Unity/src",
+                    "/home/rpitmo/Arduino/ITMO_ROBOTIC_OLYMPIAD_2022/platformIO_ITMO_ROBOTIC_OLYMPIAD_2022/.pio/libdeps/uno/Unity/src",
                     "/home/rpitmo/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "/home/rpitmo/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "/home/rpitmo/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
