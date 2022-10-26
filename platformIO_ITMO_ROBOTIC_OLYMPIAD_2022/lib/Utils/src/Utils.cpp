@@ -22,3 +22,22 @@ void Buzzer::tick() {
   delay(50);
   off();
 }
+
+
+Coordinate xx_to_XY(double x, double y, double a, double b) {
+  double X = x - a;
+  double Y = y - b;
+  Coordinate XY;
+  XY.x = X;
+  XY.y = Y;
+  return XY;
+}
+
+Coordinate XY_to_xy(double X, double Y, double a, double b) {
+  double x = X + a;
+  double y = Y + b;
+  Coordinate xy;
+  xy.x = x;
+  xy.y = y;
+  return xy;
+}

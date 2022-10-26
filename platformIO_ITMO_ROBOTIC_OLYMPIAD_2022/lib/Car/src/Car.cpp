@@ -4,12 +4,18 @@ void Car::init() {
   startTime = getTime();
   leftMotor.init();
   rightMotor.init();
-  coord.x = 0;
-  coord.y = 0;
-  straight.KP = 100;
-  straight.KI = 20;
-  rotation.KP = 30;
-  rotation.KI = 15;
+  odometry_init();
+  line.line1.pin = A0;
+  line.line2.pin = A1;
+  // line.line1.envValue = 500;
+  // line.line1.lineValue = 845;
+  // line.line2.envValue = 650;
+  // line.line2.lineValue = 895;
+  line.line1.envValue = 800;
+  line.line1.lineValue = 961;
+  line.line2.envValue = 800;
+  line.line2.lineValue = 970;
+  line.init();
 }
 
 void Car::run(int left, int right) {
@@ -29,8 +35,114 @@ void Car::backward(int pwm) {
   leftMotor.run(-pwm);
   rightMotor.run(-pwm);
 }
-void Car::turnLeft(int pwm);
-void Car::turnRight(int pwm);
+void Car::turnLeft_delay() { //150
+  int pwm = 150;
+
+  long int prevLeftEncoderCounter = leftMotor.encoderCounter;
+  long int prevRightEncoderCounter = rightMotor.encoderCounter;
+
+  leftMotor.run(-pwm);
+  rightMotor.run(pwm);
+  delay(800);
+  stop();
+
+  long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
+  long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
+
+  Serial.print(dLeftCounter);
+  Serial.print(", ");
+  Serial.println(dRightCouter);
+
+
+}
+void Car::turnRight_delay() {
+  int pwm = 150;
+
+  long int prevLeftEncoderCounter = leftMotor.encoderCounter;
+  long int prevRightEncoderCounter = rightMotor.encoderCounter;
+
+  leftMotor.run(pwm);
+  rightMotor.run(-pwm);
+  delay(600);
+
+  long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
+  long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
+
+  Serial.print(dLeftCounter);
+  Serial.print(", ");
+  Serial.println(dRightCouter);
+}
+
+void Car::turnLeft_encoder(int speed) {
+  PID left, right;
+
+  left.KP = 0.1;
+  left.KI = 0.03;
+  right.KP = 0.1;
+  right.KI = 0.2;
+
+  left.prevTime = getTime();
+  right.prevTime = getTime();
+
+  int leftSetpoint = -15;
+  int rightSetpoint = 75;
+
+  long int prevLeftEncoderCounter = leftMotor.encoderCounter;
+  long int prevRightEncoderCounter = rightMotor.encoderCounter;
+
+  long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
+  long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
+
+  int leftError = leftSetpoint - dLeftCounter;
+  int rightError = rightSetpoint - dRightCouter;
+
+  Serial.print(leftError);
+  Serial.print(", ");
+  Serial.println(rightError);
+
+  while ((leftError <= 0) || (rightError >=0)) {
+    // update vars 
+    dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
+    dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
+    leftError = leftSetpoint - dLeftCounter;
+    rightError = rightSetpoint - dRightCouter;
+
+    left.dt = getTime() - left.prevTime;
+    right.dt = getTime() - right.prevTime;
+
+    left.prevTime = getTime();
+    right.prevTime = getTime();
+
+    left.I += leftError*left.dt;
+    right.I += rightError*right.dt;
+
+    int leftPwm = left.KP * leftError + left.KI * left.I;
+    int rightPwm = right.KP * rightError + right.KI * right.I;
+
+    leftMotor.run(leftPwm);
+    // rightMotor.run(rightPwm);
+
+    Serial.print(leftError);
+    Serial.print(", ");
+    Serial.println(rightError);
+
+  }
+
+}
+
+void Car::turnRight_encoder(int speed) {
+
+}
+
+void Car::odometry_init() {
+  coord.x = 0;
+  coord.y = 0;
+  course = 0;
+  straight.KP = 100;
+  straight.KI = 20;
+  rotation.KP = 30;
+  rotation.KI = 15;
+}
 
 void Car::update_coordinate() {
 

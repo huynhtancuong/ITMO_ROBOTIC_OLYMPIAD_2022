@@ -30,6 +30,21 @@ class Buzzer {
     void tick();
 };
 
+Coordinate xx_to_XY(double x, double y, double a, double b);
+Coordinate XY_to_xy(double X, double Y, double a, double b);
+
+void run_until_intersec();
+
+void turn_left();
+
+void turn_right();
+
+void pickup();
+
+void drop();
+
+void task2();
+
 
 Second getTime();
 

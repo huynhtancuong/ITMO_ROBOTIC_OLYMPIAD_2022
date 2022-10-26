@@ -1,9 +1,16 @@
 #include "Car.h"
 
+// #define NUMBER_ACTIONS 5
+
 
 
 Car car;
 Buzzer buzzer;
+// action list[NUMBER_ACTIONS] = {
+//   run_until_intersec,
+//   turn_left,
+
+// };
 
 
 void leftEncoderIntFunc(){
@@ -52,61 +59,25 @@ void setup() {
   // init Serial
   Serial.begin(115200);
 
-  // Once time code
-   
-  // car.leftMotor.run(140);
-  car.rightMotor.run(255);
-//  car.move_to(0.4, 0);
-//  buzzer.tick();
-//  car.move_to(0.4, 0.4);
-//  buzzer.tick();
-//  car.move_to(0, 0.4);
-//  buzzer.tick();
-//  car.move_to(0, 0);
-//  buzzer.tick();
-//  car.move_to(0.4, 0);
-//  buzzer.tick();
-//  car.move_to(1, 1);
-//  car.stop();
+  task2();
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-//  car.update_coordinate();
-//  Serial.print(car.heading);
-//   Serial.print(", ");
-//  Serial.print(car.course);
-//   Serial.print(", ");
-//   Serial.print(car.coord.x);
-//   Serial.print(", ");
-//   Serial.println(car.coord.y);
-// car.leftMotor.run_rpm(0);
-// car.rightMotor.run_rpm(0);
-// Serial.println();
-// Serial.print(car.leftMotor.getSpeed());
-// Serial.print(", ");
-// Serial.println(car.rightMotor.getSpeed());
-
-  // car.move_to(1, 1);
-
-  // static long int prevEncoderCounter = 0;
-  // if (prevEncoderCounter != car.leftMotor.encoderCounter) {
-  //   prevEncoderCounter = car.leftMotor.encoderCounter;
-  //   Serial.print(millis());
-  //   Serial.print(": ");
-  //   Serial.println(car.leftMotor.encoderCounter);
-  // }
 
 
-  // static long int prevEncoderCounter = 0;
-  // if ((millis() >= 10000) && (millis() <=10100)) {
-  //   if (prevEncoderCounter != car.rightMotor.encoderCounter) {
-  //     prevEncoderCounter = car.rightMotor.encoderCounter;
-  //     Serial.print(millis());
-  //     Serial.print(": ");
-  //     Serial.println(car.rightMotor.encoderCounter);
-  //   }
-  // }
+  Serial.print(car.line.line1.getValueD());
+  Serial.print(", ");
+  Serial.println(car.line.line2.getValueD());
+
+
+
+}
+
+void task2() {
+  run_until_intersec();
+  delay(500);
+  turn_left();
 }
 
 
@@ -127,3 +98,31 @@ void perform_motor_test() {
     prevTime = millis();
   }
 }
+
+
+
+void run_until_intersec() {
+  car.forward(100);
+  while (car.line.is_intersec_rising() == 0) {
+    car.update_coordinate();
+  }
+  car.stop();
+}
+
+void turn_left() {
+  car.turnLeft_delay();
+  car.stop();
+}
+
+void turn_right() {
+  car.turnRight_delay();
+}
+
+void pickup() {
+  car.pickup();
+}
+
+void drop() {
+  car.drop();
+}
+

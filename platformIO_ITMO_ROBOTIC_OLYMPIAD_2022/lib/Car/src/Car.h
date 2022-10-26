@@ -3,6 +3,7 @@
 
 #include "Motor.h"
 #include <Arduino.h>
+#include "LineSensor.h"
 
 
 class Car {
@@ -20,6 +21,7 @@ class Car {
     Radian course = 0;
     Meter distance_error = 0.05;
     PID straight, rotation;
+    LineSensors line;
     
     
     void init();
@@ -27,10 +29,16 @@ class Car {
     void stop();
     void forward(int pwm);
     void backward(int pwm);
-    void turnLeft(int pwm);
-    void turnRight(int pwm);
+    void turnLeft_delay();
+    void turnRight_delay();
+    void turnLeft_encoder(int speed);
+    void turnRight_encoder(int speed);
     void update_coordinate();
     void move_to(double x, double y);
+    void odometry_init();
+    bool intersec_check();
+    void pickup();
+    void drop();
 
   private:
     Meter distance;
