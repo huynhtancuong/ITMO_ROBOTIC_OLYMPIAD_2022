@@ -1,16 +1,7 @@
 #include "Car.h"
 
-// #define NUMBER_ACTIONS 5
-
-
-
 Car car;
 Buzzer buzzer;
-// action list[NUMBER_ACTIONS] = {
-//   run_until_intersec,
-//   turn_left,
-
-// };
 
 
 void leftEncoderIntFunc(){
