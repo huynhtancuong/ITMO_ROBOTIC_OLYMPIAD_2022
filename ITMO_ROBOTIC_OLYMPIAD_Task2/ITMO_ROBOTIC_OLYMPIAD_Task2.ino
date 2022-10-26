@@ -2,6 +2,7 @@
 
 
 Car car;
+Buzzer buzzer;
 
 
 void leftEncoderIntFunc(){
@@ -22,6 +23,9 @@ void rightEncoderIntFunc(){
 }
 
 void setup() {
+  // init buzzer object
+  buzzer.pin = 9;
+  buzzer.init();
   // init car object
   car.leftMotor.interuptPin = 0; // D2
   car.rightMotor.interuptPin = 1; // D3
@@ -31,30 +35,42 @@ void setup() {
   car.rightMotor.pwmPin = 5;
   car.init();
   // set up interupt
-  attachInterrupt(car.leftMotor.interuptPin, leftEncoderIntFunc, CHANGE);
-  attachInterrupt(car.rightMotor.interuptPin, rightEncoderIntFunc, CHANGE);
+  attachInterrupt(car.leftMotor.interuptPin, leftEncoderIntFunc, FALLING);
+  attachInterrupt(car.rightMotor.interuptPin, rightEncoderIntFunc, FALLING);
   // init Serial
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // Once time code
-  // car.forward(100);
+   
+   
   // car.leftMotor.run(255);
-  car.move_to(1, 0);
-  car.move_to(1, 1);
+//  car.move_to(0.4, 0);
+//  buzzer.tick();
+//  car.move_to(0.4, 0.4);
+//  buzzer.tick();
+//  car.move_to(0, 0.4);
+//  buzzer.tick();
+//  car.move_to(0, 0);
+//  buzzer.tick();
+//  car.move_to(0.4, 0);
+//  buzzer.tick();
+//  car.move_to(1, 1);
+//  car.stop();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  // Serial.print(car.leftMotor.getPositionR());
-  // Serial.print(", ");
-  // Serial.println(car.rightMotor.getPositionR());
+//  car.update_coordinate();
+//  Serial.print(car.heading);
+//   Serial.print(", ");
+//  Serial.print(car.course);
+//   Serial.print(", ");
+//   Serial.print(car.coord.x);
+//   Serial.print(", ");
+//   Serial.println(car.coord.y);
+car.leftMotor.run_rpm(50);
+car.rightMotor.run_rpm(50);
+Serial.println();
+//Serial.println(car.leftMotor.getSpeed());
   // car.move_to(1, 1);
 }
-
-
-
-
-
-
-
-

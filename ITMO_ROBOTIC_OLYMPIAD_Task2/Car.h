@@ -16,12 +16,15 @@ class Car {
     Second currentTime;
     Second prevTime;
     Radian heading = 0;
-    double K_STRAIGHT=60, K_ROTATION=50;
-    double PID_integral = 0;
-    double PID_KI = 15;
+    Radian bearing = 0;
+    Radian course = 0;
+    Meter distance_error = 0.05;
+    PID straight, rotation;
+    
     
     void init();
     void run(int left, int right);
+    void stop();
     void forward(int pwm);
     void backward(int pwm);
     void turnLeft(int pwm);
