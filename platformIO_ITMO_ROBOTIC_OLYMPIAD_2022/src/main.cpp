@@ -1,29 +1,9 @@
 #include "Car.h"
+#include "main.h"
 
 Car car;
 Buzzer buzzer;
 
-
-void leftEncoderIntFunc(){
-  noInterrupts();
-  if (car.leftMotor.currentDirection == FORWARD) {
-    ++car.leftMotor.encoderCounter;
-  } else { // if direction is backward
-    --car.leftMotor.encoderCounter;
-  }
-  interrupts();
-  // Serial.println(car.leftMotor.encoderCounter);
-}
-
-void rightEncoderIntFunc(){
-  noInterrupts();
-  if (car.rightMotor.currentDirection == FORWARD) {
-    ++car.rightMotor.encoderCounter;
-  } else { // if direction is backward
-    --car.rightMotor.encoderCounter;
-  }
-  interrupts();
-}
 
 void setup() {
   // init buzzer object
@@ -47,6 +27,7 @@ void setup() {
   // set up interupt
   attachInterrupt(car.leftMotor.interuptPin, leftEncoderIntFunc, RISING);
   attachInterrupt(car.rightMotor.interuptPin, rightEncoderIntFunc, RISING);
+  timer_interupt_init();
   // init Serial
   Serial.begin(115200);
 
@@ -55,14 +36,9 @@ void setup() {
 }
 
 void loop() {
-
-
   Serial.print(car.line.line1.getValueD());
   Serial.print(", ");
   Serial.println(car.line.line2.getValueD());
-
-
-
 }
 
 void task2() {
@@ -70,6 +46,31 @@ void task2() {
   delay(500);
   turn_left();
 }
+
+
+void leftEncoderIntFunc(){
+  noInterrupts();
+  if (car.leftMotor.currentDirection == FORWARD) {
+    ++car.leftMotor.encoderCounter;
+  } else { // if direction is backward
+    --car.leftMotor.encoderCounter;
+  }
+  interrupts();
+  // Serial.println(car.leftMotor.encoderCounter);
+}
+
+void rightEncoderIntFunc(){
+  noInterrupts();
+  if (car.rightMotor.currentDirection == FORWARD) {
+    ++car.rightMotor.encoderCounter;
+  } else { // if direction is backward
+    --car.rightMotor.encoderCounter;
+  }
+  interrupts();
+}
+
+
+
 
 
 void perform_motor_test() {
@@ -90,6 +91,28 @@ void perform_motor_test() {
   }
 }
 
+void timer_interupt_init() {
+  cli(); //disable interupt
+  TCCR1A = 0;
+  TCCR1B = 0;
+
+  TCCR1B |= B00000100;
+
+  TIMSK1 |= B00000010;
+
+  OCR1A  = 5; //80ms = 16ms * 5
+
+  sei();
+}
+
+ISR(TIMER1_COMPA_vect) {
+  TCNT1 = 0;
+  odometry_update();
+}
+
+void odometry_update() {
+  car.update_coordinate();
+}
 
 
 void run_until_intersec() {
