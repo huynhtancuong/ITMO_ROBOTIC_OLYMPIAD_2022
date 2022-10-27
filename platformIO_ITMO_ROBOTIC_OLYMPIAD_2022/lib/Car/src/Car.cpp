@@ -16,6 +16,10 @@ void Car::init() {
   line.line2.envValue = 800;
   line.line2.lineValue = 970;
   line.init();
+  straight.KP = 100;
+  straight.KI = 20;
+  rotation.KP = 30;
+  rotation.KI = 15;
 }
 
 void Car::run(int left, int right) {
@@ -138,10 +142,6 @@ void Car::odometry_init() {
   coord.x = 0;
   coord.y = 0;
   course = 0;
-  straight.KP = 100;
-  straight.KI = 20;
-  rotation.KP = 30;
-  rotation.KI = 15;
 }
 
 void Car::update_coordinate() {
@@ -231,7 +231,7 @@ double Car::get_linearSpeed() {
   straight.I += distance*straight.dt;
   if (abs(straight.I) > 100/straight.KI) straight.I = copysign(1, straight.I) * 100/straight.KI;
 
-   double linearSpeed = straight.KP * distance * cos(heading) + straight.KI * straight.I;
+  double linearSpeed = straight.KP * distance * cos(heading) + straight.KI * straight.I;
 //  double linearSpeed = straight.KP * distance + PID_KI * PID_integral;
   if (abs(linearSpeed) > 150) linearSpeed = copysign(1, linearSpeed) * 150;
   return linearSpeed;
