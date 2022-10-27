@@ -12,10 +12,18 @@ void Car::init()
   // line.line1.lineValue = 845;
   // line.line2.envValue = 650;
   // line.line2.lineValue = 895;
-  line.line1.envValue = 800;
-  line.line1.lineValue = 961;
-  line.line2.envValue = 800;
-  line.line2.lineValue = 970;
+  // line.line1.envValue = 800;
+  // line.line1.lineValue = 961;
+  // line.line2.envValue = 800;
+  // line.line2.lineValue = 970;
+  line.line1.envValue = 585;
+  line.line1.lineValue = 920;
+  line.line2.envValue = 400;
+  line.line2.lineValue = 900;
+  // line.line1.envValue = 780;
+  // line.line1.lineValue = 960;
+  // line.line2.envValue = 730;
+  // line.line2.lineValue = 950;
   line.init();
   straight.KP = 100;
   straight.KI = 20;
@@ -48,38 +56,56 @@ void Car::turnLeft_delay(unsigned int time)
 { // 150
   int pwm = 150;
 
-  long int prevLeftEncoderCounter = leftMotor.encoderCounter;
-  long int prevRightEncoderCounter = rightMotor.encoderCounter;
+  // long int prevLeftEncoderCounter = leftMotor.encoderCounter;
+  // long int prevRightEncoderCounter = rightMotor.encoderCounter;
 
   leftMotor.run(-pwm);
   rightMotor.run(pwm);
   delay(time);
   stop();
 
-  long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
-  long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
+  // long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
+  // long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
 
-  Serial.print(dLeftCounter);
-  Serial.print(", ");
-  Serial.println(dRightCouter);
+  // Serial.print(dLeftCounter);
+  // Serial.print(", ");
+  // Serial.println(dRightCouter);
 }
+
+void Car::rotate_left_until_line_detected(int pwm) {
+  while (!line.is10()) {
+    leftMotor.run(-pwm);
+    rightMotor.run(pwm);
+  }
+  stop();
+}
+
+void Car::rotate_right_until_line_detected(int pwm) {
+  while (!line.is01()) {
+    leftMotor.run(pwm);
+    rightMotor.run(-pwm);
+  }
+  stop();
+}
+
 void Car::turnRight_delay(unsigned int time)
 {
   int pwm = 150;
 
-  long int prevLeftEncoderCounter = leftMotor.encoderCounter;
-  long int prevRightEncoderCounter = rightMotor.encoderCounter;
+  // long int prevLeftEncoderCounter = leftMotor.encoderCounter;
+  // long int prevRightEncoderCounter = rightMotor.encoderCounter;
 
   leftMotor.run(pwm);
   rightMotor.run(-pwm);
   delay(time);
+  stop();
 
-  long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
-  long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
+  // long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
+  // long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
 
-  Serial.print((dLeftCounter));
-  Serial.print(", ");
-  Serial.println(dRightCouter);
+  // Serial.print((dLeftCounter));
+  // Serial.print(", ");
+  // Serial.println(dRightCouter);
 }
 
 void Car::turnLeft_encoder(int speed) // suck
@@ -282,3 +308,38 @@ int Car::get_pwm_left(double linearSpeed, double angularSpeed)
 }
 
 
+void Car::run_follow_line(int linear_speed) {
+
+  // int angular_speed = 0;
+  int pwmLeft = linear_speed, pwmRight = linear_speed;
+
+  if (line.is00()) {
+    // angular_speed = 0;
+
+  }
+  else if (line.is11()) {
+    // angular_speed = 0;
+  }
+  else if (line.is10()) { // right > left
+    // angular_speed = 50; // angular > 0
+    pwmLeft   = 0;
+    pwmRight  = 100;
+  }
+  else if (line.is01()) { // left > right
+    // angular_speed = -50; // angular < 0
+    pwmLeft   = 100;
+    pwmRight  = 0;
+  }
+
+  // pwmLeft = get_pwm_left(linear_speed, angular_speed);
+  // pwmRight = get_pwm_right(linear_speed, angular_speed);
+
+  run(pwmLeft, pwmRight);
+}
+
+void Car::stop_now() {
+  leftMotor.run(-100);
+  rightMotor.run(-100);
+  delay(50);
+  stop();
+}

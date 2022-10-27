@@ -4,6 +4,7 @@
 #include "Motor.h"
 #include <Arduino.h>
 #include "LineSensor.h"
+#include "Grabber.h"
 
 
 class Car {
@@ -22,11 +23,13 @@ class Car {
     Meter distance_error = 0.05;
     PID straight, rotation;
     LineSensors line;
+    Grabber grabber;
     
     
     void init();
     void run(int left, int right);
     void stop();
+    void stop_now();
     void forward(int pwm);
     void backward(int pwm);
     void turnLeft_delay(unsigned int time);
@@ -40,6 +43,8 @@ class Car {
     void pickup();
     void drop();
     void run_follow_line(int linear_speed);
+    void rotate_left_until_line_detected(int pwm);
+    void rotate_right_until_line_detected(int pwm);
 
   private:
     Meter distance;

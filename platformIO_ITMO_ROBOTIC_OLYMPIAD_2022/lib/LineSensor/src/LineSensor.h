@@ -20,6 +20,10 @@ class LineSensors {
         bool is_intersec(); // return true if 2 sensor is 1
         bool is_intersec_rising(); // only return true on rising
         void init();
+        bool is00();
+        bool is11();
+        bool is10();
+        bool is01();
 };
 
 #endif

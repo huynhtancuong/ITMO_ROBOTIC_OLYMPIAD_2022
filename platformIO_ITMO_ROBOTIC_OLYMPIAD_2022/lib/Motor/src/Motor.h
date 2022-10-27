@@ -34,6 +34,8 @@ class Motor {
     void set_speed_control(double KP, double KI, double KD);
     void set_encoderNumber(int num);
     void set_pin(int interuptPin, int pwmPin, int dirPin);
+    void stop();
+    void stop_now();
 };
 
 #endif

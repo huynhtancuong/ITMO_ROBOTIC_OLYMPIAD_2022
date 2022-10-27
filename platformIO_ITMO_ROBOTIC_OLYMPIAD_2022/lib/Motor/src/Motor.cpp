@@ -8,6 +8,21 @@ void Motor::init() {
   speed_ctr.I = 0;
 }
 
+void Motor::stop() {
+  run(0);
+}
+
+void Motor::stop_now() {
+  if (currentDirection == FORWARD) {
+    run(-50);
+    // delay(50);
+  }
+  if (currentDirection == BACKWARD) {
+    run(50);
+    // delay(50);
+  }
+}
+
 double Motor::getSpeed() {
     
   Second currentTime = getTime();

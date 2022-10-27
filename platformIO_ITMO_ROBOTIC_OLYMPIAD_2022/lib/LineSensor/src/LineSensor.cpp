@@ -37,3 +37,23 @@ void LineSensors::init() {
     line1.init();
     line2.init();
 }
+
+bool LineSensors::is00() {
+    if (!line1.getValueD() && !line2.getValueD()) return true;
+    return false;
+}
+
+bool LineSensors::is01() {
+    if (!line1.getValueD() && line2.getValueD()) return true;
+    return false;
+}
+
+bool LineSensors::is10() {
+    if (line1.getValueD() && !line2.getValueD()) return true;
+    return false;
+}
+
+bool LineSensors::is11() {
+    if (line1.getValueD() && line2.getValueD()) return true;
+    return false;
+}

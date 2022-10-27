@@ -17,26 +17,70 @@ void setup() {
   car.rightMotor.set_encoderNumber(24);
   car.leftMotor.set_speed_control(0.2, 0.5, 0);
   car.rightMotor.set_speed_control(0.2, 0.5, 0);
+  car.grabber.init(9, 10);
   car.init();
   // set up interupt
-  odometry_interupt_init();
+  // odometry_interupt_init();
   // init Serial
   Serial.begin(115200);
 
-  task2();
+  // task2();
+  // grabber_test();
 
 }
 
 void loop() {
-  Serial.print(car.line.line1.getValueD());
-  Serial.print(", ");
-  Serial.println(car.line.line2.getValueD());
+  // Serial.print(car.line.line1.getValueD());
+  // Serial.print(", ");
+  // Serial.println(car.line.line2.getValueD());
+  // show_line_sensor_value();
+  // grabber_test();
+}
+
+void grabber_test() {
+  car.grabber.up();
+  delay(1000);
+  car.grabber.down();
+  delay(1000);
 }
 
 void task2() {
   run_until_intersec();
   delay(500);
+
+  run_until_intersec();
+  delay(500);
+
+  run_until_intersec();
+  delay(500);
+
+  turn_right();
+  delay(500);
+
+  run_for_interval(1);
+  delay(500);
+
+  turn_180_left();
+  delay(500);
+
+  run_until_intersec();
+  delay(500);
+
   turn_left();
+  delay(500);
+
+  run_until_intersec();
+  delay(500);
+
+  run_until_intersec();
+  delay(500);
+
+  turn_right();
+  delay(500);
+
+  run_for_interval(1);
+
+
 }
 
 
@@ -62,7 +106,11 @@ void rightEncoderIntFunc(){
 }
 
 
-
+void show_line_sensor_value() {
+  Serial.print(car.line.line1.getValueA());
+  Serial.print(", ");
+  Serial.println(car.line.line2.getValueA());
+}
 
 
 void perform_motor_test() {
@@ -97,20 +145,40 @@ void odometry_update() {
 
 
 void run_until_intersec() {
-  car.forward(100); // TODO: replace with run_follow_line(speed);
+  // car.forward(100); // TODO: replace with run_follow_line(speed);
   while (car.line.is_intersec_rising() == 0) {
-    // car.run_follow_line(150);
+    car.run_follow_line(150); // 150
   }
-  car.stop();
+  car.stop_now();
+}
+
+void run_for_interval(Second time) {
+  Second startTime = getTime();
+  while (getTime() - startTime < time) {
+    car.run_follow_line(150);
+  }
+  car.stop_now();
+
+}
+
+void turn_180_right() {
+  turn_right();
+}
+
+void turn_180_left() {
+  turn_left();
 }
 
 void turn_left() {
-  car.turnLeft_delay(600);
+  car.turnLeft_delay(500);
+  car.rotate_left_until_line_detected(100);
   car.stop();
 }
 
 void turn_right() {
-  car.turnRight_delay(600);
+  car.turnRight_delay(500);
+  car.rotate_right_until_line_detected(100);
+  car.stop();
 }
 
 void pickup() {
