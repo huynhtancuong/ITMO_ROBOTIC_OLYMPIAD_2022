@@ -1,5 +1,6 @@
 #include "Car.h"
 #include "main.h"
+#include <TimerOne.h>
 
 Car car;
 Buzzer buzzer;
@@ -25,9 +26,7 @@ void setup() {
   
   car.init();
   // set up interupt
-  attachInterrupt(car.leftMotor.interuptPin, leftEncoderIntFunc, RISING);
-  attachInterrupt(car.rightMotor.interuptPin, rightEncoderIntFunc, RISING);
-  timer_interupt_init();
+  odometry_interupt_init();
   // init Serial
   Serial.begin(115200);
 
@@ -91,24 +90,13 @@ void perform_motor_test() {
   }
 }
 
-void timer_interupt_init() {
-  cli(); //disable interupt
-  TCCR1A = 0;
-  TCCR1B = 0;
-
-  TCCR1B |= B00000100;
-
-  TIMSK1 |= B00000010;
-
-  OCR1A  = 5; //80ms = 16ms * 5
-
-  sei();
+void odometry_interupt_init() {
+  attachInterrupt(car.leftMotor.interuptPin, leftEncoderIntFunc, RISING);
+  attachInterrupt(car.rightMotor.interuptPin, rightEncoderIntFunc, RISING);
+  Timer1.initialize(80000); // 80ms
+  Timer1.attachInterrupt(odometry_update);
 }
 
-ISR(TIMER1_COMPA_vect) {
-  TCNT1 = 0;
-  odometry_update();
-}
 
 void odometry_update() {
   car.update_coordinate();
@@ -116,10 +104,8 @@ void odometry_update() {
 
 
 void run_until_intersec() {
-  car.forward(100);
-  while (car.line.is_intersec_rising() == 0) {
-    car.update_coordinate();
-  }
+  car.forward(100); // TODO: replace with run_follow_line(speed);
+  while (car.line.is_intersec_rising() == 0);
   car.stop();
 }
 
