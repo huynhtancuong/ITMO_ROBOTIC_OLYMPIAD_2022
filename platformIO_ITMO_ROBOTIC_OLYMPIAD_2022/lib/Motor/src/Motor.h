@@ -13,7 +13,7 @@ class Motor {
     int interuptPin; // pin for interupt
     int pwmPin; // pin for PWM
     int dirPin; // pin for direction control
-    int encoderNumber = 50;
+    int encoderNumber = 24;
     volatile long int encoderCounter = 0;
     enum Direction currentDirection; // current direction of the motor 
     long int prevEncoderCounter = 0;
@@ -31,6 +31,9 @@ class Motor {
     Radian getPositionR(); // return position of motor in radian
     Degree getPositionD(); // return position of motor in Degrees
     RPM getSpeed(); // return rotation per minute
+    void set_speed_control(double KP, double KI, double KD);
+    void set_encoderNumber(int num);
+    void set_pin(int interuptPin, int pwmPin, int dirPin);
 };
 
 #endif

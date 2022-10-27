@@ -11,19 +11,12 @@ void setup() {
   buzzer.pin = 9;
   buzzer.init();
   // init car object
-  car.leftMotor.interuptPin = 0; // D2
-  car.rightMotor.interuptPin = 1; // D3
-  car.leftMotor.dirPin = 7;
-  car.rightMotor.dirPin = 4;
-  car.leftMotor.pwmPin = 6;
-  car.rightMotor.pwmPin = 5;
-  car.leftMotor.encoderNumber = 24;
-  car.rightMotor.encoderNumber = 24; //120
-  car.leftMotor.speed_ctr.KP = 0.2;
-  car.leftMotor.speed_ctr.KI = 0.5;
-  car.rightMotor.speed_ctr.KP = 0.2;
-  car.rightMotor.speed_ctr.KI = 0.5;
-  
+  car.leftMotor.set_pin(0, 6, 7);
+  car.rightMotor.set_pin(1, 5, 4);
+  car.leftMotor.set_encoderNumber(24);
+  car.rightMotor.set_encoderNumber(24);
+  car.leftMotor.set_speed_control(0.2, 0.5, 0);
+  car.rightMotor.set_speed_control(0.2, 0.5, 0);
   car.init();
   // set up interupt
   odometry_interupt_init();

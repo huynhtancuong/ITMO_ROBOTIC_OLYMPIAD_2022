@@ -94,3 +94,18 @@ Radian Motor::getPositionR() { // return position of motor in Radian
 Degree Motor::getPositionD() { // return position of motor in Degree
   return encoderCounter * (double(360)/encoderNumber); 
 }
+
+void Motor::set_speed_control(double KP, double KI, double KD) {
+  Motor::speed_ctr.KP = KP;
+  Motor::speed_ctr.KI = KI;
+  Motor::speed_ctr.KD = KD;
+}
+
+void Motor::set_encoderNumber(int num) {
+  Motor::encoderNumber = num;
+}
+void Motor::set_pin(int interuptPin, int pwmPin, int dirPin) {
+  Motor::interuptPin = interuptPin;
+  Motor::pwmPin = pwmPin;
+  Motor::dirPin = dirPin;
+}
