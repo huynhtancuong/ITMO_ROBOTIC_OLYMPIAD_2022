@@ -29,8 +29,8 @@ class Car {
     void stop();
     void forward(int pwm);
     void backward(int pwm);
-    void turnLeft_delay();
-    void turnRight_delay();
+    void turnLeft_delay(unsigned int time);
+    void turnRight_delay(unsigned int time);
     void turnLeft_encoder(int speed);
     void turnRight_encoder(int speed);
     void update_coordinate();
@@ -39,6 +39,7 @@ class Car {
     bool intersec_check();
     void pickup();
     void drop();
+    void run_follow_line(int linear_speed);
 
   private:
     Meter distance;
@@ -47,8 +48,8 @@ class Car {
     bool isNearGoal(double error);
     double get_linearSpeed();
     double get_angularSpeed();
-    int get_pwm_right();
-    int get_pwm_left();
+    int get_pwm_right(double linearSpeed, double angularSpeed);
+    int get_pwm_left(double linearSpeed, double angularSpeed);
 };
 
 

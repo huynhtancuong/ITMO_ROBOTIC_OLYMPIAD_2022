@@ -98,17 +98,19 @@ void odometry_update() {
 
 void run_until_intersec() {
   car.forward(100); // TODO: replace with run_follow_line(speed);
-  while (car.line.is_intersec_rising() == 0);
+  while (car.line.is_intersec_rising() == 0) {
+    // car.run_follow_line(150);
+  }
   car.stop();
 }
 
 void turn_left() {
-  car.turnLeft_delay();
+  car.turnLeft_delay(600);
   car.stop();
 }
 
 void turn_right() {
-  car.turnRight_delay();
+  car.turnRight_delay(600);
 }
 
 void pickup() {

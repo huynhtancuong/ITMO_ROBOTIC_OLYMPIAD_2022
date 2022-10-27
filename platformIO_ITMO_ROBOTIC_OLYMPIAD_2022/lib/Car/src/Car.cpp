@@ -1,6 +1,7 @@
 #include "Car.h"
 
-void Car::init() {
+void Car::init()
+{
   startTime = getTime();
   leftMotor.init();
   rightMotor.init();
@@ -22,24 +23,29 @@ void Car::init() {
   rotation.KI = 15;
 }
 
-void Car::run(int left, int right) {
+void Car::run(int left, int right)
+{
   leftMotor.run(left);
   rightMotor.run(right);
 }
-void Car::stop() {
+void Car::stop()
+{
   leftMotor.run(0);
   rightMotor.run(0);
 }
 
-void Car::forward(int pwm) {
+void Car::forward(int pwm)
+{
   leftMotor.run(pwm);
   rightMotor.run(pwm);
 }
-void Car::backward(int pwm) {
+void Car::backward(int pwm)
+{
   leftMotor.run(-pwm);
   rightMotor.run(-pwm);
 }
-void Car::turnLeft_delay() { //150
+void Car::turnLeft_delay(unsigned int time)
+{ // 150
   int pwm = 150;
 
   long int prevLeftEncoderCounter = leftMotor.encoderCounter;
@@ -47,7 +53,7 @@ void Car::turnLeft_delay() { //150
 
   leftMotor.run(-pwm);
   rightMotor.run(pwm);
-  delay(800);
+  delay(time);
   stop();
 
   long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
@@ -56,10 +62,9 @@ void Car::turnLeft_delay() { //150
   Serial.print(dLeftCounter);
   Serial.print(", ");
   Serial.println(dRightCouter);
-
-
 }
-void Car::turnRight_delay() {
+void Car::turnRight_delay(unsigned int time)
+{
   int pwm = 150;
 
   long int prevLeftEncoderCounter = leftMotor.encoderCounter;
@@ -67,17 +72,18 @@ void Car::turnRight_delay() {
 
   leftMotor.run(pwm);
   rightMotor.run(-pwm);
-  delay(600);
+  delay(time);
 
   long int dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
   long int dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
 
-  Serial.print(dLeftCounter);
+  Serial.print((dLeftCounter));
   Serial.print(", ");
   Serial.println(dRightCouter);
 }
 
-void Car::turnLeft_encoder(int speed) {
+void Car::turnLeft_encoder(int speed) // suck
+{
   PID left, right;
 
   left.KP = 0.1;
@@ -104,8 +110,9 @@ void Car::turnLeft_encoder(int speed) {
   Serial.print(", ");
   Serial.println(rightError);
 
-  while ((leftError <= 0) || (rightError >=0)) {
-    // update vars 
+  while ((leftError <= 0) || (rightError >= 0))
+  {
+    // update vars
     dLeftCounter = leftMotor.encoderCounter - prevLeftEncoderCounter;
     dRightCouter = rightMotor.encoderCounter - prevRightEncoderCounter;
     leftError = leftSetpoint - dLeftCounter;
@@ -117,8 +124,8 @@ void Car::turnLeft_encoder(int speed) {
     left.prevTime = getTime();
     right.prevTime = getTime();
 
-    left.I += leftError*left.dt;
-    right.I += rightError*right.dt;
+    left.I += leftError * left.dt;
+    right.I += rightError * right.dt;
 
     int leftPwm = left.KP * leftError + left.KI * left.I;
     int rightPwm = right.KP * rightError + right.KI * right.I;
@@ -129,33 +136,25 @@ void Car::turnLeft_encoder(int speed) {
     Serial.print(leftError);
     Serial.print(", ");
     Serial.println(rightError);
-
   }
-
 }
 
-void Car::turnRight_encoder(int speed) {
-
+void Car::turnRight_encoder(int speed) // suck
+{
 }
 
-void Car::odometry_init() {
+void Car::odometry_init()
+{
   coord.x = 0;
   coord.y = 0;
   course = 0;
 }
 
-void Car::update_coordinate() {
+void Car::update_coordinate()
+{
 
   Radian curLeftAngle = leftMotor.getPositionR();
   Radian curRightAngle = rightMotor.getPositionR();
-//
-//  Serial.print(curLeftAngle);
-//  Serial.print(", ");
-//  Serial.println(curRightAngle);
-//
-// Serial.print(leftMotor.encoderCounter);
-//  Serial.print(", ");
-//  Serial.println(rightMotor.encoderCounter);
 
   Radian dLeftAngle = curLeftAngle - leftMotor.prevPosition;
   Radian dRightAngle = curRightAngle - rightMotor.prevPosition;
@@ -171,34 +170,37 @@ void Car::update_coordinate() {
   Meter deltaX = goal.x - coord.x;
   Meter deltaY = goal.y - coord.y;
 
-  distance = sqrt(deltaX*deltaX + deltaY*deltaY);
+  distance = sqrt(deltaX * deltaX + deltaY * deltaY);
 
   bearing = atan2(deltaY, deltaX);
 
   heading = bearing - course;
 
-  if (abs(heading) > PI) {
+  if (abs(heading) > PI)
+  {
     heading -= copysign(1, heading) * 2 * PI;
   }
-
 }
 
-Radian Car::get_course_angle(Radian curLeftAngle, Radian curRightAngle) {
+Radian Car::get_course_angle(Radian curLeftAngle, Radian curRightAngle)
+{
   return (curRightAngle - curLeftAngle) * wheelRadius / distanceBetweenWheels;
 }
 
-void Car::move_to(double x, double y) {
+void Car::move_to(double x, double y)
+{
   currentTime = getTime() - startTime;
   prevTime = currentTime;
   update_goal(x, y);
 
   update_coordinate();
 
-  while (!isNearGoal(distance_error)) {
-    run( get_pwm_left() , get_pwm_right() );
+  while (!isNearGoal(Car::distance_error))
+  {
+    double linearSpeed = get_linearSpeed();
+    double angularSpeed = get_angularSpeed();
+    run(get_pwm_left(linearSpeed, angularSpeed), get_pwm_right(linearSpeed, angularSpeed));
 
-    // Serial.println( get_pwm_left() );
-    
     Serial.print(coord.x);
     Serial.print(", ");
     Serial.print(coord.y);
@@ -206,59 +208,77 @@ void Car::move_to(double x, double y) {
     Serial.print(heading);
     Serial.print(", ");
     Serial.println(distance);
-  }  
+  }
 
   run(0, 0);
-
 }
 
-void Car::update_goal(double x, double y) {
+void Car::update_goal(double x, double y)
+{
   goal.x = x;
   goal.y = y;
 }
 
-bool Car::isNearGoal(double error) {
+bool Car::isNearGoal(double error)
+{
   update_coordinate();
-  if (distance <= error) return true;
+  if (distance <= error)
+    return true;
   return false;
 }
 
-double Car::get_linearSpeed() {
+double Car::get_linearSpeed()
+{
   currentTime = getTime() - startTime;
   straight.dt = currentTime - straight.prevTime;
   straight.prevTime = currentTime;
 
-  straight.I += distance*straight.dt;
-  if (abs(straight.I) > 100/straight.KI) straight.I = copysign(1, straight.I) * 100/straight.KI;
+  straight.I += distance * straight.dt;
+  if (abs(straight.I) > 100 / straight.KI)
+    straight.I = copysign(1, straight.I) * 100 / straight.KI;
 
+  // choose linear or nonlinear model
   double linearSpeed = straight.KP * distance * cos(heading) + straight.KI * straight.I;
-//  double linearSpeed = straight.KP * distance + PID_KI * PID_integral;
-  if (abs(linearSpeed) > 150) linearSpeed = copysign(1, linearSpeed) * 150;
+  //  double linearSpeed = straight.KP * distance + PID_KI * PID_integral;
+
+  if (abs(linearSpeed) > 150)
+    linearSpeed = copysign(1, linearSpeed) * 150;
   return linearSpeed;
 }
 
-double Car::get_angularSpeed() {
+double Car::get_angularSpeed()
+{
   currentTime = getTime() - startTime;
   rotation.dt = currentTime - rotation.prevTime;
   rotation.prevTime = currentTime;
 
-  rotation.I += heading*rotation.dt;
-  if (abs(rotation.I) > 100/rotation.KI) rotation.I = copysign(1, rotation.I) * 100/rotation.KI;
-  
-   double angularSpeed = straight.KP * sin(heading) * cos(heading) + rotation.KP * heading;
-//  double angularSpeed = rotation.KP * heading;
-  if (abs(angularSpeed) > 100) angularSpeed = copysign(1, angularSpeed) * 100;
+  rotation.I += heading * rotation.dt;
+  if (abs(rotation.I) > 100 / rotation.KI)
+    rotation.I = copysign(1, rotation.I) * 100 / rotation.KI;
+
+  // choose linear or nonlinear model
+  double angularSpeed = straight.KP * sin(heading) * cos(heading) + rotation.KP * heading;
+  //  double angularSpeed = rotation.KP * heading;
+
+  if (abs(angularSpeed) > 100)
+    angularSpeed = copysign(1, angularSpeed) * 100;
   return angularSpeed;
 }
 
-int Car::get_pwm_right() {
-  int pwmRight = get_linearSpeed() + get_angularSpeed();
-  if (abs(pwmRight) > 255) pwmRight = copysign(1, pwmRight) * 100;
+int Car::get_pwm_right(double linearSpeed, double angularSpeed)
+{
+  int pwmRight = linearSpeed + angularSpeed;
+  if (abs(pwmRight) > 255)
+    pwmRight = copysign(1, pwmRight) * 100;
   return pwmRight;
 }
 
-int Car::get_pwm_left() {
-  int pwmLeft = get_linearSpeed() - get_angularSpeed();
-  if (abs(pwmLeft) > 255) pwmLeft = copysign(1, pwmLeft) * 100;
+int Car::get_pwm_left(double linearSpeed, double angularSpeed)
+{
+  int pwmLeft = linearSpeed - angularSpeed;
+  if (abs(pwmLeft) > 255)
+    pwmLeft = copysign(1, pwmLeft) * 100;
   return pwmLeft;
 }
+
+
