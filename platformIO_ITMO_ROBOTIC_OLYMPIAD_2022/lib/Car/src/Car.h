@@ -5,6 +5,8 @@
 #include <Arduino.h>
 #include "LineSensor.h"
 #include "Grabber.h"
+#include "Ultrasonic.h"
+#include <SharpIR.h>
 
 
 class Car {
@@ -24,6 +26,7 @@ class Car {
     PID straight, rotation;
     LineSensors line;
     Grabber grabber;
+    Ultrasonic ultrasonic;
     
     
     void init();
