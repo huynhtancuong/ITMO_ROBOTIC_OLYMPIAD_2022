@@ -1,9 +1,11 @@
 #include "Car.h"
 #include "main.h"
 #include <TimerOne.h>
+#include <SharpIR.h>
 
 Car car;
 Buzzer buzzer;
+SharpIR SharpIR(SharpIR::GP2Y0A21YK0F, A3);
 
 
 void setup() {
@@ -17,7 +19,9 @@ void setup() {
   car.rightMotor.set_encoderNumber(24);
   car.leftMotor.set_speed_control(0.2, 0.5, 0);
   car.rightMotor.set_speed_control(0.2, 0.5, 0);
-  car.grabber.init(9, 10);
+  car.grabber.init(11, 10);
+  // car.ultrasonic.init(9, 8);
+  
   car.init();
   // set up interupt
   // odometry_interupt_init();
@@ -26,6 +30,7 @@ void setup() {
 
   // task2();
   // grabber_test();
+  car.grabber.down();
 
 }
 
@@ -35,6 +40,12 @@ void loop() {
   // Serial.println(car.line.line2.getValueD());
   // show_line_sensor_value();
   // grabber_test();
+  distance_sensor_test();
+}
+
+void distance_sensor_test() {
+  // Serial.println(car.ultrasonic.getDistance());
+  Serial.println(SharpIR.getDistance());
 }
 
 void grabber_test() {

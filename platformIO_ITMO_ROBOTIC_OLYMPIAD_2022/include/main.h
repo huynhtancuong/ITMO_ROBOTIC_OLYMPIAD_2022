@@ -19,6 +19,7 @@ void turn_right();
 void pickup();
 void drop();
 void grabber_test();
+void distance_sensor_test();
 void task2();
 
 
