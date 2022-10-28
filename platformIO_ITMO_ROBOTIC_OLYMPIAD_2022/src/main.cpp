@@ -74,6 +74,9 @@ void task2() {
 
   run_until_intersec(runSpeed);
   delay(500);
+
+  run_until_intersec(runSpeed);
+  delay(500);
   
   turn_right(150);
 
@@ -83,7 +86,7 @@ void task2() {
 
   turn_180_left();
 
-  run_until_intersec(100);
+  run_until_intersec(runSpeed);
   delay(500);
 
   turn_left(150);
@@ -91,7 +94,7 @@ void task2() {
   run_until_intersec(runSpeed);
   delay(500);
 
-  run_until_intersec(runSpeed+10);
+  run_until_intersec(runSpeed);
   delay(500);
 
   turn_right(150);
@@ -100,6 +103,18 @@ void task2() {
 
   drop();
 
+  run_backward_for_interval(1);
+
+  turn_180_left();
+
+  run_until_intersec(100);
+  delay(500);
+
+  turn_right(150);
+
+  run_until_intersec(runSpeed);
+
+  run_for_interval(0.5);
 
 }
 
@@ -206,6 +221,12 @@ void run_for_interval(Second time) {
   }
   car.stop_now();
 
+}
+
+void run_backward_for_interval(Second time) {
+  car.run(-100, -100);
+  delay(300);
+  car.stop();
 }
 
 void turn_180_right() {
