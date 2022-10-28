@@ -15,8 +15,8 @@ void run_for_interval(Second time);
 void turn_180_left();
 void turn_180_right();
 
-void turn_left();
-void turn_right();
+void turn_left(int pwm);
+void turn_right(int pwm);
 void pickup();
 void drop();
 void grabber_test();

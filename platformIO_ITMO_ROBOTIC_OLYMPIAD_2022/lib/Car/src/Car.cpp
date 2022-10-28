@@ -52,9 +52,9 @@ void Car::backward(int pwm)
   leftMotor.run(-pwm);
   rightMotor.run(-pwm);
 }
-void Car::turnLeft_delay(unsigned int time)
+void Car::turnLeft_delay(unsigned int time, int pwm)
 { // 150
-  int pwm = 150;
+  // int pwm = 150;
 
   // long int prevLeftEncoderCounter = leftMotor.encoderCounter;
   // long int prevRightEncoderCounter = rightMotor.encoderCounter;
@@ -80,17 +80,44 @@ void Car::rotate_left_until_line_detected(int pwm) {
   stop();
 }
 
+void Car::rotate_left_until_line_01(int pwm) {
+  while (!line.is01())
+  {
+    leftMotor.run(-pwm);
+    rightMotor.run(pwm);
+  }
+  stop();
+}
 void Car::rotate_right_until_line_detected(int pwm) {
-  while (line.is00()) {
+  while (!line.is01()) {
     leftMotor.run(pwm);
     rightMotor.run(-pwm);
   }
   stop();
 }
 
-void Car::turnRight_delay(unsigned int time)
+void Car::rotate_right_until_line_10(int pwm) {
+  while (!line.is10())
+  {
+    leftMotor.run(pwm);
+    rightMotor.run(-pwm);
+  }
+  stop();
+}
+
+void Car::rotate_right_until_line_00(int pwm) {
+  while (!line.is00())
+  {
+    leftMotor.run(pwm);
+    rightMotor.run(-pwm);
+  }
+  stop();
+}
+
+
+void Car::turnRight_delay(unsigned int time, int pwm)
 {
-  int pwm = 150;
+  // int pwm = 150;
 
   // long int prevLeftEncoderCounter = leftMotor.encoderCounter;
   // long int prevRightEncoderCounter = rightMotor.encoderCounter;
@@ -340,7 +367,7 @@ void Car::run_follow_line(int linear_speed) {
 void Car::stop_now() {
   leftMotor.run(-50);
   rightMotor.run(-50);
-  delay(50);
+  delay(30);
   stop();
 }
 

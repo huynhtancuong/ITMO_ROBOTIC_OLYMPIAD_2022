@@ -60,7 +60,7 @@ void grabber_test() {
 void task2() {
 
 
-  int runSpeed = 100;
+  int runSpeed = 90;
 
 
   // turn_right();
@@ -69,34 +69,36 @@ void task2() {
   run_until_intersec(runSpeed);
   delay(500);
 
-  // run_until_intersec(runSpeed);
-  // delay(500);
+  run_until_intersec(runSpeed);
+  delay(500);
 
-  // run_until_intersec(runSpeed);
-  // delay(500);
+  run_until_intersec(runSpeed);
+  delay(500);
   
-  turn_right();
+  turn_right(150);
 
   run_until_object_detected(runSpeed);
   delay(500);
   pickup();
 
-  // turn_180_left();
+  turn_180_left();
 
-  // run_until_intersec(runSpeed);
-  // delay(500);
+  run_until_intersec(100);
+  delay(500);
 
-  // turn_left();
+  turn_left(150);
 
-  // run_until_intersec(runSpeed);
-  // delay(500);
+  run_until_intersec(runSpeed);
+  delay(500);
 
-  // run_until_intersec(runSpeed);
-  // delay(500);
+  run_until_intersec(runSpeed+10);
+  delay(500);
 
-  // turn_right();
+  turn_right(150);
 
-  // run_for_interval(1);
+  run_for_interval(2);
+
+  drop();
 
 
 }
@@ -207,26 +209,29 @@ void run_for_interval(Second time) {
 }
 
 void turn_180_right() {
-  turn_right();
+  turn_right(150);
 }
 
 void turn_180_left() {
-  turn_left();
+  turn_left(150);
 }
 
-void turn_left() {
-  car.turnLeft_delay(300);
+void turn_left(int pwm) {
+  car.turnLeft_delay(300, pwm);
   car.stop();
   delay(50);
-  car.rotate_left_until_line_detected(100);
+  car.rotate_left_until_line_detected(pwm); // 100
   car.stop();
 }
 
-void turn_right() {
-  car.turnRight_delay(300);
+void turn_right(int pwm) {
+  car.turnRight_delay(300, pwm);
+  // car.rotate_right_until_line_10(100);
   car.stop();
+  // car.rotate_right_until_line_00(100);
+  // car.stop();
   delay(50);
-  car.rotate_right_until_line_detected(100);
+  car.rotate_right_until_line_detected(pwm); // 100
   car.stop();
 }
 
@@ -242,5 +247,7 @@ void run_until_object_detected(int speed) {
   while (car.ultrasonic.objectDetected(5) == false) {
     car.run_follow_line(speed); // 150
   }
+  car.run(speed, speed);
+  delay(50);
   car.stop_now();
 }
