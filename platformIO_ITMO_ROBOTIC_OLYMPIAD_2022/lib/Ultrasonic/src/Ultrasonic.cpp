@@ -17,9 +17,12 @@ int Ultrasonic::getDistance() {
     digitalWrite(trigPin, LOW);
     duration = pulseIn(echoPin, HIGH);
     distance = duration * 0.034/2;
+
+    if (distance > 200) distance = 200;
+
     return distance;
 }
-bool Ultrasonic::objectDetected() {
-    if (getDistance() < 5) return true;
+bool Ultrasonic::objectDetected(int range) {
+    if (getDistance() <= range) return true;
     return false;
 }

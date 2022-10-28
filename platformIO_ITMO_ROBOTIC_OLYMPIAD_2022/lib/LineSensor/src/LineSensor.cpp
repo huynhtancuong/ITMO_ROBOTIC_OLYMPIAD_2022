@@ -57,3 +57,10 @@ bool LineSensors::is11() {
     if (line1.getValueD() && line2.getValueD()) return true;
     return false;
 }
+
+void LineSensors::setRangeValue(int leftMax, int leftMin, int rightMax, int rightMin) {
+    line1.envValue = leftMin;
+    line1.lineValue = leftMax;
+    line2.envValue = rightMin;
+    line2.lineValue = rightMax;
+}

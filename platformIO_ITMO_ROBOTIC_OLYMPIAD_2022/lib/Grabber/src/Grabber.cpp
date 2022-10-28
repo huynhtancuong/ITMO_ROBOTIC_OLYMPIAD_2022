@@ -5,7 +5,7 @@
 void Grabber::init(int grabPin, int upPin) {
     Grab.attach(grabPin);
     Up.attach(upPin);
-    Grabber::up();
+    Grabber::down();
 }
 
 void Grabber::up() {

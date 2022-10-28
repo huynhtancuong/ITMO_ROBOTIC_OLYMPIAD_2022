@@ -9,7 +9,7 @@ class Ultrasonic {
         int distance;
         void init(int trigPin, int echoPin);
         int getDistance();
-        bool objectDetected();
+        bool objectDetected(int range);
 };
 
 #endif

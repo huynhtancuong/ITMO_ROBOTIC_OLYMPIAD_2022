@@ -12,14 +12,12 @@ void Motor::stop() {
   run(0);
 }
 
-void Motor::stop_now() {
+void Motor::run_inverse_dir(int speed) {
   if (currentDirection == FORWARD) {
-    run(-50);
-    // delay(50);
+    run(-speed);
   }
   if (currentDirection == BACKWARD) {
-    run(50);
-    // delay(50);
+    run(speed);
   }
 }
 
@@ -77,13 +75,13 @@ void Motor::run(int pwm) {
     {
       currentDirection = FORWARD;
       digitalWrite(dirPin, 1);
-      analogWrite(pwmPin, pwm);
+      analogWrite(pwmPin, abs(pwm));
     }
     else // BACKWARD
     {
       currentDirection = BACKWARD;
       digitalWrite(dirPin, 0);
-      analogWrite(pwmPin, pwm);
+      analogWrite(pwmPin, abs(pwm));
     }
   }
 }

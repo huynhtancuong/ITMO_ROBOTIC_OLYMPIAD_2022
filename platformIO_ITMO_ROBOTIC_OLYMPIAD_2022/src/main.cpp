@@ -4,33 +4,32 @@
 #include <SharpIR.h>
 
 Car car;
-Buzzer buzzer;
-SharpIR SharpIR(SharpIR::GP2Y0A21YK0F, A3);
+// Buzzer buzzer;
+// SharpIR SharpIR(SharpIR::GP2Y0A21YK0F, A3);
 
 
 void setup() {
   // init buzzer object
-  buzzer.pin = 9;
-  buzzer.init();
+  // buzzer.pin = 9;
+  // buzzer.init();
   // init car object
   car.leftMotor.set_pin(0, 6, 7);
   car.rightMotor.set_pin(1, 5, 4);
-  car.leftMotor.set_encoderNumber(24);
-  car.rightMotor.set_encoderNumber(24);
-  car.leftMotor.set_speed_control(0.2, 0.5, 0);
-  car.rightMotor.set_speed_control(0.2, 0.5, 0);
-  car.grabber.init(11, 10);
-  // car.ultrasonic.init(9, 8);
-  
+  // car.leftMotor.set_encoderNumber(24);
+  // car.rightMotor.set_encoderNumber(24);
+  // car.leftMotor.set_speed_control(0.2, 0.5, 0);
+  // car.rightMotor.set_speed_control(0.2, 0.5, 0);
+  car.grabber.init(10, 11); // grabPin = 10, upPin = 11
+  car.ultrasonic.init(9, 8); // trigPin = 9, echoPin = 8
+  car.line.setRangeValue(956, 470, 898, 254);
   car.init();
   // set up interupt
   // odometry_interupt_init();
   // init Serial
   Serial.begin(115200);
 
-  // task2();
-  // grabber_test();
-  car.grabber.down();
+  task2();
+  // calibrate_line_sensor();
 
 }
 
@@ -40,56 +39,64 @@ void loop() {
   // Serial.println(car.line.line2.getValueD());
   // show_line_sensor_value();
   // grabber_test();
-  distance_sensor_test();
+  // distance_sensor_test();
+  // car.leftMotor.run(255);
+  // car.rightMotor.run(-255);
+  // car.ultrasonic.getDistance();
 }
 
 void distance_sensor_test() {
-  // Serial.println(car.ultrasonic.getDistance());
-  Serial.println(SharpIR.getDistance());
+  // Serial.println(car.ultrasonic.objectDetected(10));
+  // Serial.println(SharpIR.getDistance());
 }
 
 void grabber_test() {
-  car.grabber.up();
-  delay(1000);
   car.grabber.down();
+  delay(1000);
+  car.grabber.up();
   delay(1000);
 }
 
 void task2() {
-  run_until_intersec();
+
+
+  int runSpeed = 100;
+
+
+  // turn_right();
+  // run_for_interval(1);
+
+  run_until_intersec(runSpeed);
   delay(500);
 
-  run_until_intersec();
-  delay(500);
+  // run_until_intersec(runSpeed);
+  // delay(500);
 
-  run_until_intersec();
-  delay(500);
-
+  // run_until_intersec(runSpeed);
+  // delay(500);
+  
   turn_right();
-  delay(500);
 
-  run_for_interval(1);
+  run_until_object_detected(runSpeed);
   delay(500);
+  pickup();
 
-  turn_180_left();
-  delay(500);
+  // turn_180_left();
 
-  run_until_intersec();
-  delay(500);
+  // run_until_intersec(runSpeed);
+  // delay(500);
 
-  turn_left();
-  delay(500);
+  // turn_left();
 
-  run_until_intersec();
-  delay(500);
+  // run_until_intersec(runSpeed);
+  // delay(500);
 
-  run_until_intersec();
-  delay(500);
+  // run_until_intersec(runSpeed);
+  // delay(500);
 
-  turn_right();
-  delay(500);
+  // turn_right();
 
-  run_for_interval(1);
+  // run_for_interval(1);
 
 
 }
@@ -121,6 +128,34 @@ void show_line_sensor_value() {
   Serial.print(car.line.line1.getValueA());
   Serial.print(", ");
   Serial.println(car.line.line2.getValueA());
+}
+
+void calibrate_line_sensor() {
+  int line1_max = 0;
+  int line1_min = 1024;
+  int line2_max = 0;
+  int line2_min = 1024;
+  double startTime = getTime();
+  Serial.println("Calibrating Line Sensor...");
+  while (getTime() - startTime <= 5) {
+    int line1_value = car.line.line1.getValueA();
+    int line2_value = car.line.line2.getValueA();
+    if (line1_max < line1_value) line1_max = line1_value;
+    if (line1_min > line1_value) line1_min = line1_value; 
+    if (line2_max < line2_value) line2_max = line2_value;
+    if (line2_min > line2_value) line2_min = line2_value; 
+  }
+  Serial.println("Calibration Completed: ");
+  Serial.print("Left (max, min): ");
+  Serial.print(line1_max);
+  Serial.print(", ");
+  Serial.println(line1_min);
+
+  Serial.print("Right (max, min): ");
+  Serial.print(line2_max);
+  Serial.print(", ");
+  Serial.println(line2_min);
+
 }
 
 
@@ -155,10 +190,9 @@ void odometry_update() {
 }
 
 
-void run_until_intersec() {
-  // car.forward(100); // TODO: replace with run_follow_line(speed);
+void run_until_intersec(int speed) {
   while (car.line.is_intersec_rising() == 0) {
-    car.run_follow_line(150); // 150
+    car.run_follow_line(speed); // 150
   }
   car.stop_now();
 }
@@ -166,7 +200,7 @@ void run_until_intersec() {
 void run_for_interval(Second time) {
   Second startTime = getTime();
   while (getTime() - startTime < time) {
-    car.run_follow_line(150);
+    car.run_follow_line(100);
   }
   car.stop_now();
 
@@ -181,13 +215,17 @@ void turn_180_left() {
 }
 
 void turn_left() {
-  car.turnLeft_delay(500);
+  car.turnLeft_delay(300);
+  car.stop();
+  delay(50);
   car.rotate_left_until_line_detected(100);
   car.stop();
 }
 
 void turn_right() {
-  car.turnRight_delay(500);
+  car.turnRight_delay(300);
+  car.stop();
+  delay(50);
   car.rotate_right_until_line_detected(100);
   car.stop();
 }
@@ -200,3 +238,9 @@ void drop() {
   car.drop();
 }
 
+void run_until_object_detected(int speed) {
+  while (car.ultrasonic.objectDetected(5) == false) {
+    car.run_follow_line(speed); // 150
+  }
+  car.stop_now();
+}

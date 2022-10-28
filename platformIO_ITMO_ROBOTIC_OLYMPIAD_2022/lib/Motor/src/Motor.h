@@ -35,7 +35,7 @@ class Motor {
     void set_encoderNumber(int num);
     void set_pin(int interuptPin, int pwmPin, int dirPin);
     void stop();
-    void stop_now();
+    void run_inverse_dir(int speed);
 };
 
 #endif

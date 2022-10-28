@@ -24,6 +24,7 @@ class LineSensors {
         bool is11();
         bool is10();
         bool is01();
+        void setRangeValue(int leftMax, int leftMin, int rightMax, int rightMin);
 };
 
 #endif
