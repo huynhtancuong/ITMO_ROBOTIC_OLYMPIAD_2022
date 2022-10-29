@@ -28,7 +28,9 @@ void setup() {
   // init Serial
   Serial.begin(115200);
 
-  task2();
+
+  test();
+  // task2();
   // calibrate_line_sensor();
 
 }
@@ -57,10 +59,15 @@ void grabber_test() {
   delay(1000);
 }
 
+void test() {
+
+}
+
 void task2() {
 
 
   int runSpeed = 90;
+  int turnSpeed = 150;
 
 
   // turn_right();
@@ -78,18 +85,18 @@ void task2() {
   run_until_intersec(runSpeed);
   delay(500);
   
-  turn_right(150);
+  turn_right(turnSpeed);
 
   run_until_object_detected(runSpeed);
   delay(500);
   pickup();
 
-  turn_180_left();
+  turn_180_left(turnSpeed);
 
   run_until_intersec(runSpeed);
   delay(500);
 
-  turn_left(150);
+  turn_left(turnSpeed);
 
   run_until_intersec(runSpeed);
   delay(500);
@@ -97,24 +104,24 @@ void task2() {
   run_until_intersec(runSpeed);
   delay(500);
 
-  turn_right(150);
+  turn_right(turnSpeed);
 
-  run_for_interval(2);
+  run_for_interval(2, runSpeed);
 
   drop();
 
-  run_backward_for_interval(1);
+  run_backward_for_interval(1, runSpeed);
 
-  turn_180_left();
+  turn_180_left(turnSpeed);
 
   run_until_intersec(100);
   delay(500);
 
-  turn_right(150);
+  turn_right(turnSpeed);
 
   run_until_intersec(runSpeed);
 
-  run_for_interval(0.5);
+  run_for_interval(0.5, runSpeed);
 
 }
 
@@ -211,37 +218,46 @@ void run_until_intersec(int speed) {
   while (car.line.is_intersec_rising() == 0) {
     car.run_follow_line(speed); // 150
   }
-  car.stop_now();
+  car.stop_now(speed);
 }
 
-void run_for_interval(Second time) {
+void run_back_until_intersec(int speed) {
+  while (car.line.is_intersec_rising() == 0) {
+    car.run_back_follow_line(speed); // 150
+  }
+  car.stop_now(speed);
+}
+
+void run_for_interval(Second time, int pwm) {
   Second startTime = getTime();
   while (getTime() - startTime < time) {
-    car.run_follow_line(100);
+    car.run_follow_line(pwm);
   }
-  car.stop_now();
+  car.stop_now(pwm);
 
 }
 
-void run_backward_for_interval(Second time) {
-  car.run(-100, -100);
-  delay(300);
-  car.stop();
+void run_backward_for_interval(Second time, int pwm) {
+  Second startTime = getTime();
+  while (getTime() - startTime < time) {
+    car.run_back_follow_line(pwm);
+  }
+  car.stop_now(pwm);
 }
 
-void turn_180_right() {
-  turn_right(150);
+void turn_180_right(int pwm) {
+  turn_right(pwm);
 }
 
-void turn_180_left() {
-  turn_left(150);
+void turn_180_left(int pwm) {
+  turn_left(pwm);
 }
 
 void turn_left(int pwm) {
   car.turnLeft_delay(300, pwm);
   car.stop();
   delay(50);
-  car.rotate_left_until_line_detected(pwm); // 100
+  car.rotate_left_until_line_10(pwm); // 100
   car.stop();
 }
 
@@ -252,7 +268,7 @@ void turn_right(int pwm) {
   // car.rotate_right_until_line_00(100);
   // car.stop();
   delay(50);
-  car.rotate_right_until_line_detected(pwm); // 100
+  car.rotate_right_until_line_01(pwm); // 100
   car.stop();
 }
 
@@ -270,5 +286,5 @@ void run_until_object_detected(int speed) {
   }
   car.run(speed, speed);
   delay(50);
-  car.stop_now();
+  car.stop_now(speed);
 }

@@ -72,10 +72,19 @@ void Car::turnLeft_delay(unsigned int time, int pwm)
   // Serial.println(dRightCouter);
 }
 
-void Car::rotate_left_until_line_detected(int pwm) {
+void Car::rotate_left(int pwm) {
+  leftMotor.run(-pwm);
+  rightMotor.run(pwm);
+}
+
+void Car::rotate_right(int pwm) {
+  leftMotor.run(pwm);
+  rightMotor.run(-pwm);
+}
+
+void Car::rotate_left_until_line_10(int pwm) {
   while (!line.is10()) {
-    leftMotor.run(-pwm);
-    rightMotor.run(pwm);
+    rotate_left(pwm);
   }
   stop();
 }
@@ -83,15 +92,23 @@ void Car::rotate_left_until_line_detected(int pwm) {
 void Car::rotate_left_until_line_01(int pwm) {
   while (!line.is01())
   {
-    leftMotor.run(-pwm);
-    rightMotor.run(pwm);
+    rotate_left(pwm);
   }
   stop();
 }
-void Car::rotate_right_until_line_detected(int pwm) {
+
+void Car::rotate_left_until_line_00(int pwm) {
+  while (!line.is00())
+  {
+    rotate_left(pwm);
+  }
+  stop();
+}
+
+
+void Car::rotate_right_until_line_01(int pwm) {
   while (!line.is01()) {
-    leftMotor.run(pwm);
-    rightMotor.run(-pwm);
+    rotate_right(pwm);
   }
   stop();
 }
@@ -99,8 +116,7 @@ void Car::rotate_right_until_line_detected(int pwm) {
 void Car::rotate_right_until_line_10(int pwm) {
   while (!line.is10())
   {
-    leftMotor.run(pwm);
-    rightMotor.run(-pwm);
+    rotate_right(pwm);
   }
   stop();
 }
@@ -108,8 +124,7 @@ void Car::rotate_right_until_line_10(int pwm) {
 void Car::rotate_right_until_line_00(int pwm) {
   while (!line.is00())
   {
-    leftMotor.run(pwm);
-    rightMotor.run(-pwm);
+    rotate_right(pwm);
   }
   stop();
 }
@@ -358,15 +373,40 @@ void Car::run_follow_line(int linear_speed) {
     pwmRight  = 0;
   }
 
-  // pwmLeft = get_pwm_left(linear_speed, angular_speed);
-  // pwmRight = get_pwm_right(linear_speed, angular_speed);
 
   run(pwmLeft, pwmRight);
 }
 
-void Car::stop_now() {
-  leftMotor.run(-50);
-  rightMotor.run(-50);
+void Car::run_back_follow_line(int linear_speed) {
+
+  // int angular_speed = 0;
+  int pwmLeft = -linear_speed, pwmRight = -linear_speed;
+
+  if (line.is00()) {
+    // angular_speed = 0;
+
+  }
+  else if (line.is11()) {
+    // angular_speed = 0;
+  }
+  else if (line.is10()) { // right > left
+    // angular_speed = 50; // angular > 0
+    pwmLeft   = 0;
+    pwmRight  = -linear_speed;
+  }
+  else if (line.is01()) { // left > right
+    // angular_speed = -50; // angular < 0
+    pwmLeft   = -linear_speed;
+    pwmRight  = 0;
+  }
+
+
+  run(pwmLeft, pwmRight);
+}
+
+void Car::stop_now(int pwm) {
+  leftMotor.run(-pwm);
+  rightMotor.run(-pwm);
   delay(30);
   stop();
 }
