@@ -16,7 +16,7 @@ void Grabber::up() {
 }
 
 void Grabber::down() {
-    Up.write(20);
+    Up.write(70);
     delay(1000);
     Grab.write(150);
     delay(500);

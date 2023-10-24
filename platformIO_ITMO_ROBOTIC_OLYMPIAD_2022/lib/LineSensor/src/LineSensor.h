@@ -15,13 +15,14 @@ class LineSensor {
 
 class LineSensors {
     public:
-        LineSensor line1, line2;
+        LineSensor left, right;
         bool prevState = false;
         bool is_intersec(); // return true if 2 sensor is 1
         bool is_intersec_rising(); // only return true on rising
         void init();
         bool is00();
         bool is11();
+        bool is_state(bool left, bool right);
         bool is10();
         bool is01();
         void setRangeValue(int leftMax, int leftMin, int rightMax, int rightMin);

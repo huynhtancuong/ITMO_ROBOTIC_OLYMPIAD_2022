@@ -11,14 +11,14 @@ int LineSensor::getValueA() {
 }
 
 int LineSensor::getValueD() {
-    if (getValueA() > (envValue + lineValue)/2) {
+    if (getValueA() > (envValue + lineValue)*2/3) {
         return true;
     }
     return false;
 }
 
 bool LineSensors::is_intersec() {
-    if (line1.getValueD() && line2.getValueD()) {
+    if (left.getValueD() && right.getValueD()) {
         return true;
     }
     return false;
@@ -34,33 +34,38 @@ bool LineSensors::is_intersec_rising() {
 }
 
 void LineSensors::init() {
-    line1.init();
-    line2.init();
+    left.init();
+    right.init();
 }
 
 bool LineSensors::is00() {
-    if (!line1.getValueD() && !line2.getValueD()) return true;
+    if (!left.getValueD() && !right.getValueD()) return true;
     return false;
 }
 
 bool LineSensors::is01() {
-    if (!line1.getValueD() && line2.getValueD()) return true;
+    if (!left.getValueD() && right.getValueD()) return true;
     return false;
 }
 
 bool LineSensors::is10() {
-    if (line1.getValueD() && !line2.getValueD()) return true;
+    if (left.getValueD() && !right.getValueD()) return true;
     return false;
 }
 
 bool LineSensors::is11() {
-    if (line1.getValueD() && line2.getValueD()) return true;
+    if (left.getValueD() && right.getValueD()) return true;
+    return false;
+}
+
+bool LineSensors::is_state(bool leftState, bool rightState) {
+    if ((left.getValueD() == leftState) && right.getValueD() == rightState) return true;
     return false;
 }
 
 void LineSensors::setRangeValue(int leftMax, int leftMin, int rightMax, int rightMin) {
-    line1.envValue = leftMin;
-    line1.lineValue = leftMax;
-    line2.envValue = rightMin;
-    line2.lineValue = rightMax;
+    left.envValue = leftMin;
+    left.lineValue = leftMax;
+    right.envValue = rightMin;
+    right.lineValue = rightMax;
 }

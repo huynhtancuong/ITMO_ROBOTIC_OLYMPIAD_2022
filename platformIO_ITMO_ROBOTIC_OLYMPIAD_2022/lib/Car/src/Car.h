@@ -35,13 +35,12 @@ class Car {
     void stop_now(int pwm);
     void forward(int pwm);
     void backward(int pwm);
-    void turnLeft_delay(unsigned int time, int pwm);
-    void turnRight_delay(unsigned int time, int pwm);
+    void turn_left_for_interval(unsigned int time, int pwm);
+    void turn_right_for_interval(unsigned int time, int pwm);
     void turnLeft_encoder(int speed);
     void turnRight_encoder(int speed);
     void update_coordinate();
     void move_to(double x, double y);
-    void odometry_init();
     bool intersec_check();
 
     void pickup();
@@ -50,17 +49,14 @@ class Car {
     void run_follow_line(int linear_speed);
     void run_back_follow_line(int linear_speed);
 
-    void rotate_left_until_line_10(int pwm);
-    void rotate_left_until_line_01(int pwm);
-    void rotate_left_until_line_00(int pwm);
-    void rotate_right_until_line_01(int pwm);
-    void rotate_right_until_line_10(int pwm);
-    void rotate_right_until_line_00(int pwm);
-
     void rotate_left(int pwm);
     void rotate_right(int pwm);
 
-  private:
+    void rotate_left_until_state(bool left_state, bool right_state, int pwm);
+
+    void rotate_right_until_state(bool left_state, bool right_state, int pwm);
+
+private:
     Meter distance;
     Radian get_course_angle(Radian curLeftAngle, Radian curRightAngle);
     void update_goal(double x, double y);
