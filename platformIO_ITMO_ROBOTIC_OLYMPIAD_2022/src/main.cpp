@@ -24,7 +24,7 @@ void setup() {
   /**
    * Begin the run
   */
-  // test();
+  test();
   // task2();
   // calibrate_line_sensor();
 
@@ -46,8 +46,8 @@ void grabber_test() {
 }
 
 void test() {
-  int runSpeed = 100;
-  int turnSpeed = 100;
+  int runSpeed = 200;
+  int turnSpeed = 200;
 
   run_until_intersec(runSpeed);
   delay(500);
@@ -218,6 +218,8 @@ void turn_right(int pwm) {
   car.stop();
   delay(50);
   car.rotate_right_until_state(0, 1, pwm);
+  car.stop();
+  car.rotate_right_until_state(0, 0, pwm);
   car.stop();
 }
 
