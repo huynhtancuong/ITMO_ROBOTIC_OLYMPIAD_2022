@@ -11,7 +11,7 @@ int LineSensor::getValueA() {
 }
 
 int LineSensor::getValueD() {
-    if (getValueA() > (envValue + lineValue)*2/3) {
+    if (getValueA() > (lineValue)*8/10) {
         return true;
     }
     return false;

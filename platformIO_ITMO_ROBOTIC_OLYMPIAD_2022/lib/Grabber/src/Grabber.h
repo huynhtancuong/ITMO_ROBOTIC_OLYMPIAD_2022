@@ -10,6 +10,7 @@ class Grabber {
         void init(int grabPin, int upPin);
         void up();
         void down();
+        void up_without_obj();
 };
 
 

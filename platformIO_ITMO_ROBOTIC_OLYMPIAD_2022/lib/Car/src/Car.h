@@ -48,6 +48,7 @@ class Car {
 
     void pickup();
     void drop();
+    void up();
     
     void run_follow_line(int pwm);
     void run_back_follow_line(int linear_speed);

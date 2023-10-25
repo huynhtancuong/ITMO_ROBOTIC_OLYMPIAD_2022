@@ -149,6 +149,10 @@ void Car::pickup() {
   Car::grabber.up();
 }
 
+void Car::up() {
+  Car::grabber.up_without_obj();
+}
+
 void Car::drop() {
   Car::grabber.down();
 }

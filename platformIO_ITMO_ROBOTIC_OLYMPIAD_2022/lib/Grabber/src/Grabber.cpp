@@ -15,6 +15,11 @@ void Grabber::up() {
     delay(500);
 }
 
+void Grabber::up_without_obj() {
+    Up.write(170);
+    delay(500);
+}
+
 void Grabber::down() {
     Up.write(100);
     delay(1000);

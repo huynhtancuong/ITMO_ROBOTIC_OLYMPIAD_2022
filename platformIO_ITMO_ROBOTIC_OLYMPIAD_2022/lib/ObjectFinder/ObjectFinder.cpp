@@ -13,9 +13,11 @@ void ObjectFinder::set_pin(int pin) {
 }
 
 bool ObjectFinder::is_object_on_left(int distance) {
-    for (int i = 135; i<=180; i++) {
+    servo.write(180);
+    delay(500);
+    for (int i = 180; i>=170; i--) {
         servo.write(i);
-        delay(20);
+        delay(50);
         if (distance_sensor.objectDetected(distance)) {
             servo.write(90);
             return true;
@@ -25,9 +27,11 @@ bool ObjectFinder::is_object_on_left(int distance) {
 }
 
 bool ObjectFinder::is_object_on_right(int distance) {
-    for (int i = 45; i>=0; i--) {
+    servo.write(0);
+    delay(500);
+    for (int i = 0; i<=10; i++) {
         servo.write(i);
-        delay(20);
+        delay(50);
         if (distance_sensor.objectDetected(distance)) {
             servo.write(90);
             return true;

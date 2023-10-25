@@ -5,6 +5,10 @@
 
 void object_finder_test();
 void prepare_for_turn(int pwm);
+void test2();
+
+int start_object_position = 0;
+int finish_object_position = 4;
 
 Car car;
 Buzzer buzzer;
@@ -31,7 +35,7 @@ void setup() {
   /**
    * Begin the run
   */
-  test();
+  test2();
   // task2();
   // calibrate_line_sensor();
   // object_finder_test();
@@ -41,6 +45,8 @@ void setup() {
 }
 
 void loop() {
+  // show_line_sensor_value();
+  // delay(500);
   // distance_sensor_test();
 }
 
@@ -60,6 +66,337 @@ void grabber_test() {
   delay(1000);
   car.grabber.up();
   delay(1000);
+}
+
+void test2() {
+  int runSpeed = 200;
+  int turnSpeed = 200;
+
+  run_until_intersec(runSpeed); // go to first intersec
+  delay(500);
+
+  run_until_intersec(runSpeed); // go to second intersec
+  delay(500);
+
+  if (car.object_finder.is_object_on_right(40)) {
+    turn_right(turnSpeed);
+    start_object_position = 4;
+  } else if (car.object_finder.is_object_on_left(40)) {
+    turn_left(turnSpeed);
+    start_object_position = 1;
+  } else {
+    car.object_finder.servo.write(90);
+    run_until_intersec(runSpeed); // go to third intersec
+    delay(500);
+    if (car.object_finder.is_object_on_right(40)) {
+      turn_right(turnSpeed);
+      start_object_position = 5;
+    } else if (car.object_finder.is_object_on_left(40)) {
+      turn_left(turnSpeed);
+      start_object_position = 2;
+    } else {
+      car.object_finder.servo.write(90);
+      run_until_intersec(runSpeed); // go to fourth intersec
+      delay(500);
+      if (car.object_finder.is_object_on_right(40)) {
+        turn_right(turnSpeed);
+        start_object_position = 6;
+      } else {
+        turn_left(turnSpeed);
+        start_object_position = 3;
+      }
+    }
+  }
+
+  run_until_object_detected(runSpeed);
+  delay(500);
+
+  pickup();
+  delay(500);
+
+  turn_180_right(turnSpeed);
+
+  run_until_intersec(runSpeed);
+
+  if (start_object_position == 1) {
+    switch (finish_object_position)
+    {
+    case 4:
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 2: 
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 5:
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 3: 
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    default:
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    }
+  }
+
+  if (start_object_position == 2) {
+    switch (finish_object_position)
+    {
+    case 5:
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 1: 
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 4:
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 3: 
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    default:
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    }
+  }
+
+  if (start_object_position == 3) {
+    switch (finish_object_position)
+    {
+    case 6:
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 1: 
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 4:
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 2: 
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    default:
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    }
+  }
+  
+  if (start_object_position == 4) {
+    switch (finish_object_position)
+    {
+    case 1:
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 2: 
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 5:
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 3: 
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    default:
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    }
+  }
+
+  if (start_object_position == 5) {
+    switch (finish_object_position)
+    {
+    case 2:
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 1: 
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 4:
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 3: 
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    default:
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    }
+  }
+
+  if (start_object_position == 6) {
+    switch (finish_object_position)
+    {
+    case 3:
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 1: 
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 4:
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    case 2: 
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_right(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    default:
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      turn_left(turnSpeed);
+      run_until_intersec(runSpeed);
+      drop();
+      break;
+    }
+  }
+
+  car.up();
+
+  turn_180_right(turnSpeed);
+
+  run_until_intersec(runSpeed);
+
+  switch (finish_object_position)
+  {
+  case 1:
+    turn_right(turnSpeed);
+    run_until_intersec(runSpeed);
+    break;
+  case 2:
+    turn_right(turnSpeed);
+    run_until_intersec(runSpeed);
+    run_until_intersec(runSpeed);
+    break;
+  case 3:
+    turn_right(turnSpeed);
+    run_until_intersec(runSpeed);
+    run_until_intersec(runSpeed);
+    run_until_intersec(runSpeed);
+    break;
+  case 4:
+    turn_left(turnSpeed);
+    run_until_intersec(runSpeed);
+    break;
+  case 5:
+    turn_left(turnSpeed);
+    run_until_intersec(runSpeed);
+    run_until_intersec(runSpeed);
+    break;
+  default:
+    turn_left(turnSpeed);
+    run_until_intersec(runSpeed);
+    run_until_intersec(runSpeed);
+    run_until_intersec(runSpeed);
+    break;
+  }
+
+  car.forward(200);
+  delay(250);
+  car.stop();
 }
 
 void test() {
@@ -278,11 +615,14 @@ void pickup() {
 }
 
 void drop() {
+  car.run_back_follow_line(100);
+  delay(450);
+  car.stop();
   car.drop();
 }
 
 void run_until_object_detected(int speed) {
-  while (car.ultrasonic.objectDetected(17) == false) {
+  while (car.ultrasonic.objectDetected(15) == false) {
     car.run_follow_line(speed); // 150
   }
   car.run(speed, speed);
