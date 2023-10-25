@@ -3,8 +3,11 @@
 #include <TimerOne.h>
 #include <SharpIR.h>
 
+void object_finder_test();
+void prepare_for_turn(int pwm);
+
 Car car;
-// Buzzer buzzer;
+Buzzer buzzer;
 // SharpIR SharpIR(SharpIR::GP2Y0A21YK0F, A3);
 
 
@@ -17,7 +20,11 @@ void setup() {
   car.line.left.pin = A0;
   car.line.right.pin = A1;
   car.line.setRangeValue(966, 77, 996, 102);
+  car.object_finder.set_pin(3);
   car.init();
+  // Init buzzer
+  buzzer.pin = 2;
+  buzzer.init();
   // init Serial
   Serial.begin(115200);
 
@@ -27,14 +34,24 @@ void setup() {
   test();
   // task2();
   // calibrate_line_sensor();
-
+  // object_finder_test();
+  // car.grabber.down();
+  // delay(2000);
+  // car.grabber.up();
 }
 
 void loop() {
+  // distance_sensor_test();
+}
+
+void object_finder_test() {
+  Serial.println(car.object_finder.is_object_on_left(40));
+  delay(500);
 }
 
 void distance_sensor_test() {
-  // Serial.println(car.ultrasonic.objectDetected(10));
+  Serial.println(car.ultrasonic.getDistance());
+  delay(500);
   // Serial.println(SharpIR.getDistance());
 }
 
@@ -55,10 +72,27 @@ void test() {
   run_until_intersec(runSpeed);
   delay(500);
 
-  turn_right(turnSpeed);
+  if (car.object_finder.is_object_on_right(50)) {
+    // run_for_interval(50, runSpeed);
+    turn_right(turnSpeed);
+  } else if (car.object_finder.is_object_on_left(50)) {
+    // run_for_interval(50, runSpeed);
+    turn_left(turnSpeed);
+  }
+
+  run_until_object_detected(runSpeed);
+  delay(500);
+
+  pickup();
+  delay(500);
+
+  turn_180_right(turnSpeed);
 
   run_until_intersec(runSpeed);
-  delay(500);
+
+  turn_left(turnSpeed);
+
+  run_until_intersec(runSpeed);
 
 }
 
@@ -166,7 +200,8 @@ void run_until_intersec(int speed) {
   while (car.line.is_intersec_rising() == 0) {
     car.run_follow_line(speed); // 150
   }
-  delay(200);
+  // delay(200);
+  buzzer.tick();
   car.stop_now(speed);
 }
 
@@ -203,15 +238,24 @@ void turn_180_left(int pwm) {
 }
 
 void turn_left(int pwm) {
-  car.turn_left_for_interval(300, pwm);
+
+  prepare_for_turn(pwm);
+
+  car.rotate_left_until_state(0, 1, pwm);
+  car.stop();
+  car.rotate_left_until_state(0, 0, pwm);
   car.stop();
   delay(50);
   car.rotate_left_until_state(1, 0, pwm);
   car.stop();
+  car.rotate_left_until_state(0, 0, pwm);
+  car.stop();
 }
 
 void turn_right(int pwm) {
-  // car.turn_right_for_interval(300, pwm);
+  
+  prepare_for_turn(pwm);
+  
   car.rotate_right_until_state(1, 0, pwm);
   car.stop();
   car.rotate_right_until_state(0, 0, pwm);
@@ -223,6 +267,12 @@ void turn_right(int pwm) {
   car.stop();
 }
 
+void prepare_for_turn(int pwm) {
+  for (int i=0; i<2; i++) {
+    car.run_follow_line(pwm);
+  }
+}
+
 void pickup() {
   car.pickup();
 }
@@ -232,7 +282,7 @@ void drop() {
 }
 
 void run_until_object_detected(int speed) {
-  while (car.ultrasonic.objectDetected(5) == false) {
+  while (car.ultrasonic.objectDetected(17) == false) {
     car.run_follow_line(speed); // 150
   }
   car.run(speed, speed);

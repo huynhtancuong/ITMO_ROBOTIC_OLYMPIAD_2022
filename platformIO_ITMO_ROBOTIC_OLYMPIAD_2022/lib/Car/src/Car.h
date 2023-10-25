@@ -7,6 +7,8 @@
 #include "Grabber.h"
 #include "Ultrasonic.h"
 #include <SharpIR.h>
+#include <Servo.h>
+#include "ObjectFinder.h"
 
 
 class Car {
@@ -27,6 +29,7 @@ class Car {
     LineSensors line;
     Grabber grabber;
     Ultrasonic ultrasonic;
+    ObjectFinder object_finder;
     
     
     void init();
@@ -46,7 +49,7 @@ class Car {
     void pickup();
     void drop();
     
-    void run_follow_line(int linear_speed);
+    void run_follow_line(int pwm);
     void run_back_follow_line(int linear_speed);
 
     void rotate_left(int pwm);

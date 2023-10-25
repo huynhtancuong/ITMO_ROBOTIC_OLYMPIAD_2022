@@ -9,14 +9,14 @@ void Grabber::init(int grabPin, int upPin) {
 }
 
 void Grabber::up() {
-    Grab.write(43);
+    Grab.write(60);
     delay(500);
-    Up.write(120);
+    Up.write(170);
     delay(500);
 }
 
 void Grabber::down() {
-    Up.write(70);
+    Up.write(100);
     delay(1000);
     Grab.write(150);
     delay(500);

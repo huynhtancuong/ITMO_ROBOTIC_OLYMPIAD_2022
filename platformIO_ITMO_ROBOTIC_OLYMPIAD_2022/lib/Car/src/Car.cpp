@@ -6,10 +6,7 @@ void Car::init()
   leftMotor.init();
   rightMotor.init();
   line.init();
-  straight.KP = 100;
-  straight.KI = 20;
-  rotation.KP = 30;
-  rotation.KI = 15;
+  object_finder.init(ultrasonic);
 }
 
 void Car::run(int left, int right)

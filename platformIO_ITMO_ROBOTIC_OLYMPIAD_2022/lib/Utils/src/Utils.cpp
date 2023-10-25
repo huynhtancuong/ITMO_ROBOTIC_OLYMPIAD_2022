@@ -19,7 +19,7 @@ void Buzzer::init() {
 
 void Buzzer::tick() {
   on();
-  delay(50);
+  delay(10);
   off();
 }
 
