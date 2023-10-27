@@ -112,10 +112,10 @@ void Car::run_follow_line(int pwm) {
   delay(10);
 }
 
-void Car::run_back_follow_line(int linear_speed) {
+void Car::run_back_follow_line(int pwm) {
 
   // int angular_speed = 0;
-  int pwmLeft = -linear_speed, pwmRight = -linear_speed;
+  int pwmLeft = -pwm, pwmRight = -pwm;
 
   if (line.is_state(0, 0)) {
     // angular_speed = 0;
@@ -124,23 +124,26 @@ void Car::run_back_follow_line(int linear_speed) {
   else if (line.is_state(1, 1)) {
     // angular_speed = 0;
   }
-  else if (line.is_state(1, 0)) { // right > left
-    // angular_speed = 50; // angular > 0
-    rotate_left_until_state(0, 0, 0);
+  else if (line.is_state(1, 0)) {
+    pwmLeft = pwm;
+    pwmRight = -pwm;
   }
-  else if (line.is_state(0, 1)) { // left > right
-    // angular_speed = -50; // angular < 0
-    rotate_right_until_state(0, 0, 0);
+  else if (line.is_state(0, 1)) {
+    pwmLeft = -pwm;
+    pwmRight = pwm;
   }
 
 
   run(pwmLeft, pwmRight);
+  delay(10);
+  stop();
+  delay(10);
 }
 
 void Car::stop_now(int pwm) {
   leftMotor.run(-pwm);
   rightMotor.run(-pwm);
-  delay(30);
+  delay(50);
   stop();
 }
 

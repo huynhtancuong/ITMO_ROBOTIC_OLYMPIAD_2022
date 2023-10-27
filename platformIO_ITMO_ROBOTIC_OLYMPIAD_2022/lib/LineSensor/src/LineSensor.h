@@ -9,6 +9,7 @@ class LineSensor {
 
         int getValueA();
         int getValueD();
+        bool is_color();
         void init();
 
 };
@@ -17,14 +18,11 @@ class LineSensors {
     public:
         LineSensor left, right;
         bool prevState = false;
+        void init();
         bool is_intersec(); // return true if 2 sensor is 1
         bool is_intersec_rising(); // only return true on rising
-        void init();
-        bool is00();
-        bool is11();
+        bool is_color_intersec();
         bool is_state(bool left, bool right);
-        bool is10();
-        bool is01();
         void setRangeValue(int leftMax, int leftMin, int rightMax, int rightMin);
 };
 
