@@ -10,7 +10,7 @@ void run_until_intersec(int speed);
 void run_until_object_detected(int speed);
 void show_line_sensor_value();
 
-void run_for_interval(Second time, int pwm);
+void run_forward_for_interval(Second time, int pwm);
 void run_backward_for_interval(Second time, int pwm);
 
 void turn_180_left(int pwm);

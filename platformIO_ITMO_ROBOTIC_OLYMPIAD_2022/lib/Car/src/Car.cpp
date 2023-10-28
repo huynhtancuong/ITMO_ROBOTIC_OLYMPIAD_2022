@@ -143,7 +143,7 @@ void Car::run_back_follow_line(int pwm) {
 void Car::stop_now(int pwm) {
   leftMotor.run(-pwm);
   rightMotor.run(-pwm);
-  delay(50);
+  delay(40);
   stop();
 }
 

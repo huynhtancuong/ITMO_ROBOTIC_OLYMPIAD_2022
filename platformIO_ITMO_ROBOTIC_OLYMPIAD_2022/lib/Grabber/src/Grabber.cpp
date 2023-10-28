@@ -23,6 +23,8 @@ void Grabber::up_without_obj() {
 void Grabber::down() {
     Up.write(100);
     delay(1000);
+    Grab.write(80);
+    delay(1000);
     Grab.write(150);
     delay(500);
 }

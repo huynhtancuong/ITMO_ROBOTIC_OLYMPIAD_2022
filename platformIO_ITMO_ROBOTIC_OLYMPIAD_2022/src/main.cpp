@@ -4,9 +4,11 @@
 #include <SharpIR.h>
 
 void object_finder_test();
-void prepare_for_turn(int pwm);
+void prepare_for_turn(int pwm, int num);
 void test2();
 void run_until_color_intersec(int pwm);
+void turn_left_not_prepare(int);
+void turn_right_not_prepare(int);
 
 int start_object_position = 0;
 int finish_object_position = 2;
@@ -33,11 +35,13 @@ void setup() {
   // init Serial
   Serial.begin(115200);
 
+  // Wait for the button
+  while(analogRead(A3) < 50);
+
   /**
    * Begin the run
   */
   test2();
-  // task2();
   // calibrate_line_sensor();
   // object_finder_test();
   // car.grabber.down();
@@ -49,6 +53,8 @@ void loop() {
   // show_line_sensor_value();
   // delay(500);
   // distance_sensor_test();
+  // Serial.println(analogRead(A3));
+  // delay(500);
 }
 
 void object_finder_test() {
@@ -70,8 +76,17 @@ void grabber_test() {
 }
 
 void test2() {
-  int runSpeed = 200;
+  int runSpeed = 180;
   int turnSpeed = 200;
+
+  int run_speed_to_return_to_main_line = 220;
+
+
+  // This is for drop the bottle
+  float run_time_to_target = 0.55; // seconds
+  int run_speed_to_target = 200;
+
+
 
   run_until_intersec(runSpeed); // go to first intersec
   delay(500);
@@ -125,9 +140,11 @@ void test2() {
   pickup();
   delay(500);
 
+  run_forward_for_interval(0.2, runSpeed);
+
   turn_180_right(turnSpeed);
 
-  run_until_intersec(runSpeed);
+  run_until_intersec(run_speed_to_return_to_main_line);
 
   /**
    * Begin of go to the target position
@@ -137,37 +154,37 @@ void test2() {
     switch (finish_object_position)
     {
     case 4:
-      run_until_color_intersec(runSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 2: 
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 5:
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 3: 
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     default:
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     }
@@ -177,35 +194,37 @@ void test2() {
     switch (finish_object_position)
     {
     case 5:
-      run_until_color_intersec(runSpeed);
+      // run_forward_for_interval(run_time_to_object, run_speed_to_object);
+      // run_back_until_intersec(runSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 1: 
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 4:
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 3: 
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     default:
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     }
@@ -215,37 +234,37 @@ void test2() {
     switch (finish_object_position)
     {
     case 6:
-      run_until_color_intersec(runSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 1: 
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 4:
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 2: 
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     default:
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     }
@@ -255,37 +274,37 @@ void test2() {
     switch (finish_object_position)
     {
     case 1:
-      run_until_color_intersec(runSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 2: 
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 5:
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 3: 
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     default:
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     }
@@ -295,35 +314,35 @@ void test2() {
     switch (finish_object_position)
     {
     case 2:
-      run_until_color_intersec(runSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 1: 
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 4:
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 3: 
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     default:
-      turn_right(turnSpeed);
+      turn_right_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     }
@@ -333,37 +352,37 @@ void test2() {
     switch (finish_object_position)
     {
     case 3:
-      run_until_color_intersec(runSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 1: 
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 4:
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     case 2: 
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_right(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_right_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     default:
-      turn_left(turnSpeed);
+      turn_left_not_prepare(turnSpeed);
       run_until_intersec(runSpeed);
-      turn_left(turnSpeed);
-      run_until_color_intersec(runSpeed);
+      turn_left_not_prepare(turnSpeed);
+      run_forward_for_interval(run_time_to_target, run_speed_to_target);
       drop();
       break;
     }
@@ -374,147 +393,50 @@ void test2() {
    * Go back to home
   */
 
-  car.up();
+  // car.up();
 
-  turn_180_right(turnSpeed);
+  // turn_180_right(turnSpeed);
 
-  run_until_intersec(runSpeed);
+  // run_until_intersec(run_speed_to_return_to_main_line);
 
-  switch (finish_object_position)
-  {
-  case 1:
-    turn_right(turnSpeed);
-    run_until_intersec(runSpeed);
-    break;
-  case 2:
-    turn_right(turnSpeed);
-    run_until_intersec(runSpeed);
-    run_until_intersec(runSpeed);
-    break;
-  case 3:
-    turn_right(turnSpeed);
-    run_until_intersec(runSpeed);
-    run_until_intersec(runSpeed);
-    run_until_intersec(runSpeed);
-    break;
-  case 4:
-    turn_left(turnSpeed);
-    run_until_intersec(runSpeed);
-    break;
-  case 5:
-    turn_left(turnSpeed);
-    run_until_intersec(runSpeed);
-    run_until_intersec(runSpeed);
-    break;
-  default:
-    turn_left(turnSpeed);
-    run_until_intersec(runSpeed);
-    run_until_intersec(runSpeed);
-    run_until_intersec(runSpeed);
-    break;
-  }
+  // switch (finish_object_position)
+  // {
+  // case 1:
+  //   turn_right(turnSpeed);
+  //   run_until_intersec(runSpeed);
+  //   break;
+  // case 2:
+  //   turn_right(turnSpeed);
+  //   run_until_intersec(runSpeed);
+  //   run_until_intersec(runSpeed);
+  //   break;
+  // case 3:
+  //   turn_right(turnSpeed);
+  //   run_until_intersec(runSpeed);
+  //   run_until_intersec(runSpeed);
+  //   run_until_intersec(runSpeed);
+  //   break;
+  // case 4:
+  //   turn_left(turnSpeed);
+  //   run_until_intersec(runSpeed);
+  //   break;
+  // case 5:
+  //   turn_left(turnSpeed);
+  //   run_until_intersec(runSpeed);
+  //   run_until_intersec(runSpeed);
+  //   break;
+  // default:
+  //   turn_left(turnSpeed);
+  //   run_until_intersec(runSpeed);
+  //   run_until_intersec(runSpeed);
+  //   run_until_intersec(runSpeed);
+  //   break;
+  // }
 
-  car.forward(200);
-  delay(250);
+  // car.forward(200);
+  // delay(250);
   car.stop();
 }
-
-void test() {
-  int runSpeed = 200;
-  int turnSpeed = 200;
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  if (car.object_finder.is_object_on_right(50)) {
-    // run_for_interval(50, runSpeed);
-    turn_right(turnSpeed);
-  } else if (car.object_finder.is_object_on_left(50)) {
-    // run_for_interval(50, runSpeed);
-    turn_left(turnSpeed);
-  }
-
-  run_until_object_detected(runSpeed);
-  delay(500);
-
-  pickup();
-  delay(500);
-
-  turn_180_right(turnSpeed);
-
-  run_until_intersec(runSpeed);
-
-  turn_left(turnSpeed);
-
-  run_until_intersec(runSpeed);
-
-}
-
-void task2() {
-
-
-  int runSpeed = 90;
-  int turnSpeed = 150;
-
-
-  // turn_right();
-  // run_for_interval(1);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-  
-  turn_right(turnSpeed);
-
-  run_until_object_detected(runSpeed);
-  delay(500);
-  pickup();
-
-  turn_180_left(turnSpeed);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  turn_left(turnSpeed);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  run_until_intersec(runSpeed);
-  delay(500);
-
-  turn_right(turnSpeed);
-
-  run_for_interval(2, runSpeed);
-
-  drop();
-
-  run_backward_for_interval(1, runSpeed);
-
-  turn_180_left(turnSpeed);
-
-  run_until_intersec(100);
-  delay(500);
-
-  turn_right(turnSpeed);
-
-  run_until_intersec(runSpeed);
-
-  run_for_interval(0.5, runSpeed);
-
-}
-
 
 
 void show_line_sensor_value() {
@@ -560,6 +482,10 @@ void run_until_intersec(int speed) {
   // delay(200);
   buzzer.tick();
   car.stop_now(speed);
+
+  // while (car.line.is_intersec() == 0) {
+  //   car.run_follow_line(speed); // 150
+  // }
 }
 
 void run_until_color_intersec(int speed) {
@@ -572,25 +498,27 @@ void run_until_color_intersec(int speed) {
 
 void run_back_until_intersec(int speed) {
   while (car.line.is_intersec_rising() == 0) {
-    car.run_back_follow_line(speed); // 150
+    car.backward(speed);
   }
   car.stop_now(speed);
 }
 
-void run_for_interval(Second time, int pwm) {
+void run_forward_for_interval(Second time, int pwm) {
+  // car.forward(pwm);
+  // delay(time);
+  // Serial.println("Begin go foward");
   Second startTime = getTime();
-  while (getTime() - startTime < time) {
+  while ((getTime() - startTime) < time) {
     car.run_follow_line(pwm);
   }
   car.stop_now(pwm);
+  // Serial.println("Stoped");
 
 }
 
 void run_backward_for_interval(Second time, int pwm) {
-  Second startTime = getTime();
-  while (getTime() - startTime < time) {
-    car.run_back_follow_line(pwm);
-  }
+  car.backward(pwm);
+  delay(time);
   car.stop_now(pwm);
 }
 
@@ -604,7 +532,20 @@ void turn_180_left(int pwm) {
 
 void turn_left(int pwm) {
 
-  prepare_for_turn(pwm);
+  prepare_for_turn(pwm, 3);
+
+  car.rotate_left_until_state(0, 1, pwm);
+  car.stop();
+  car.rotate_left_until_state(0, 0, pwm);
+  car.stop();
+  delay(50);
+  car.rotate_left_until_state(1, 0, pwm);
+  car.stop();
+  car.rotate_left_until_state(0, 0, pwm);
+  car.stop();
+}
+
+void turn_left_not_prepare(int pwm) {
 
   car.rotate_left_until_state(0, 1, pwm);
   car.stop();
@@ -619,7 +560,7 @@ void turn_left(int pwm) {
 
 void turn_right(int pwm) {
   
-  prepare_for_turn(pwm);
+  prepare_for_turn(pwm, 3);
   
   car.rotate_right_until_state(1, 0, pwm);
   car.stop();
@@ -632,10 +573,21 @@ void turn_right(int pwm) {
   car.stop();
 }
 
-void prepare_for_turn(int pwm) {
-  for (int i=0; i<2; i++) {
-    car.run_follow_line(pwm);
-  }
+void turn_right_not_prepare(int pwm) {
+  
+  car.rotate_right_until_state(1, 0, pwm);
+  car.stop();
+  car.rotate_right_until_state(0, 0, pwm);
+  car.stop();
+  delay(50);
+  car.rotate_right_until_state(0, 1, pwm);
+  car.stop();
+  car.rotate_right_until_state(0, 0, pwm);
+  car.stop();
+}
+
+void prepare_for_turn(int pwm, int num) {
+  run_forward_for_interval(0.1, pwm);
 }
 
 void pickup() {
@@ -643,8 +595,8 @@ void pickup() {
 }
 
 void drop() {
-  car.backward(100);
-  delay(500);
+  // car.backward(100);
+  // delay(500);
   car.stop();
   car.drop();
 }
@@ -653,7 +605,7 @@ void run_until_object_detected(int speed) {
   while (car.ultrasonic.objectDetected(15) == false) {
     car.run_follow_line(speed); // 150
   }
-  car.run(speed, speed);
-  delay(50);
-  car.stop_now(speed);
+  // car.run(speed, speed);
+  // delay(50);
+  car.stop();
 }
